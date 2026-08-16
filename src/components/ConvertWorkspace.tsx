@@ -214,10 +214,9 @@ export function ConvertWorkspace({
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
-        onClick={() => inputRef.current?.click()}
-        className={`group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-[12px] bg-surface px-8 text-center elev-raised transition-colors ${
+        className={`group relative flex flex-col items-center justify-center gap-4 rounded-[12px] bg-surface px-8 text-center elev-raised transition-colors ${
           fullWidth ? "min-h-[420px] py-24" : "min-h-[320px] py-16"
-        } ${dragging ? "bg-surface-2" : "hover:bg-surface-2"}`}
+        } ${dragging ? "bg-surface-2" : ""}`}
         style={{ border: `2px dashed ${dragging ? "#3f37c9" : "rgba(63,55,201,0.45)"}` }}
       >
         <motion.div
