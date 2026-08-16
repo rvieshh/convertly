@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { Converter } from "@/components/Converter";
+import { ConvertWorkspace } from "@/components/ConvertWorkspace";
 import { ConvertAnimation } from "@/components/ConvertAnimation";
 import { PopularFormats } from "@/components/PopularFormats";
 import { FormatCatalog } from "@/components/FormatCatalog";
@@ -32,7 +32,7 @@ export default function Home() {
               video — right in your browser, no sign-up.
             </p>
             <div className="mt-8">
-              <Converter />
+              <ConvertWorkspace />
             </div>
           </div>
 
