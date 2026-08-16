@@ -52,6 +52,18 @@ body {
     "Helvetica Neue", Arial, sans-serif;
 }
 
+/* Interactive elements get a pointer cursor by default. */
+button:not(:disabled),
+select:not(:disabled),
+a[href],
+[role="button"] {
+  cursor: pointer;
+}
+button:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+
 /* Subtle inset-highlight elevation for dark cards */
 .elev-raised {
   box-shadow:

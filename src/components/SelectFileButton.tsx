@@ -37,7 +37,7 @@ export function SelectFileButton({ onDevice, onUrl }: Props) {
       {/* main action */}
       <button
         onClick={onDevice}
-        className="rounded-l-[5px] bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+        className="cursor-pointer rounded-l-[5px] bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
       >
         Select File
       </button>
@@ -45,7 +45,7 @@ export function SelectFileButton({ onDevice, onUrl }: Props) {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Upload options"
-        className="rounded-r-[5px] border-l border-white/20 bg-primary px-2 py-2.5 text-white transition-colors hover:bg-primary-hover"
+        className="cursor-pointer rounded-r-[5px] border-l border-white/20 bg-primary px-2 py-2.5 text-white transition-colors hover:bg-primary-hover"
       >
         <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -90,7 +90,7 @@ function MenuItem({
       className={`flex w-full items-center gap-3 px-4 py-2 text-sm transition-colors ${
         soon
           ? "cursor-not-allowed text-zinc-500"
-          : "text-zinc-200 hover:bg-white/5 hover:text-white"
+          : "cursor-pointer text-zinc-200 hover:bg-white/5 hover:text-white"
       }`}
     >
       <Icon className="h-4 w-4 shrink-0" />
