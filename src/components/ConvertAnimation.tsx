@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, RefreshCw } from "lucide-react";
 
-// Format pairs that cycle in the hero animation, mimicking a live conversion.
+// Format pairs that cycle in the hero animation — only conversions Convertly
+// actually supports (images, audio, video), so the demo never oversells.
 const PAIRS: [string, string][] = [
-  ["PDF", "DOCX"],
   ["PNG", "WEBP"],
+  ["JPG", "PNG"],
   ["MP4", "MP3"],
-  ["JPG", "AVIF"],
-  ["WEBM", "GIF"],
+  ["WEBP", "AVIF"],
+  ["MOV", "MP4"],
   ["WAV", "MP3"],
 ];
 
@@ -25,19 +26,20 @@ export function ConvertAnimation() {
   const [from, to] = PAIRS[i];
 
   return (
-    <div className="relative flex h-[340px] w-full items-center justify-center">
+    <div className="relative flex h-[400px] w-full items-center justify-center">
       {/* Background orbit rings + radial glow */}
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
-        {[220, 340, 460].map((s, idx) => (
+        {[240, 380, 520].map((s, idx) => (
           <motion.div
             key={s}
-            className="absolute rounded-full border border-primary/10"
+            className="absolute rounded-full border border-primary/15"
             style={{ width: s, height: s }}
             animate={{ rotate: 360 }}
             transition={{ duration: 40 + idx * 15, repeat: Infinity, ease: "linear" }}
           />
         ))}
-        <div className="absolute h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
+        <div className="absolute h-72 w-72 rounded-full bg-primary/40 blur-[90px]" />
+        <div className="absolute h-40 w-40 rounded-full bg-secondary/30 blur-[70px]" />
       </div>
 
       {/* Convert cluster: source → badge → target */}

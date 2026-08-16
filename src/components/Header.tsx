@@ -86,14 +86,6 @@ export function Header() {
           >
             Formats
           </a>
-          <a
-            href="https://github.com/rvieshh/convertly"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-[6px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
-          >
-            GitHub
-          </a>
         </nav>
 
         {/* Right CTA */}
