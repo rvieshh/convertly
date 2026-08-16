@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FormatConverterHero } from "@/components/FormatConverterHero";
 import { CatalogSecurity } from "@/components/CatalogSecurity";
+import { ApiSection } from "@/components/ApiSection";
 import { getConverterPage, allConverterSlugs } from "@/lib/converterPages";
 
 export function generateStaticParams() {
@@ -36,6 +37,7 @@ export default async function ConverterSlugPage({
       <main className="relative overflow-hidden">
         <FormatConverterHero page={page} />
         <CatalogSecurity />
+        <ApiSection />
       </main>
       <Footer />
     </>

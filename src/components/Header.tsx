@@ -82,9 +82,15 @@ export function Header() {
 
           <a
             href="#formats"
-            className="rounded-[6px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
+            className="rounded-[5px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
           >
             Formats
+          </a>
+          <a
+            href="#api"
+            className="rounded-[5px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
+          >
+            API
           </a>
         </nav>
 

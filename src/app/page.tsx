@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { ConvertWorkspace } from "@/components/ConvertWorkspace";
 import { ConvertAnimation } from "@/components/ConvertAnimation";
 import { CatalogSecurity } from "@/components/CatalogSecurity";
+import { ApiSection } from "@/components/ApiSection";
 import { Footer } from "@/components/Footer";
 
 export default function Home() {
@@ -43,6 +44,7 @@ export default function Home() {
         </section>
 
         <CatalogSecurity />
+        <ApiSection />
       </main>
 
       <Footer />
