@@ -64,9 +64,11 @@ function kindLabel(ext: string) {
 export function ConvertWorkspace({
   defaultTarget,
   reflectUrl = false,
+  fullWidth = false,
 }: {
   defaultTarget?: string;
   reflectUrl?: boolean;
+  fullWidth?: boolean;
 }) {
   const [items, setItems] = useState<Item[]>([]);
   const [dragging, setDragging] = useState(false);
@@ -173,9 +175,9 @@ export function ConvertWorkspace({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         onClick={() => inputRef.current?.click()}
-        className={`group relative flex min-h-[320px] cursor-pointer flex-col items-center justify-center gap-4 rounded-[12px] bg-surface px-8 py-16 text-center elev-raised transition-colors ${
-          dragging ? "bg-surface-2" : "hover:bg-surface-2"
-        }`}
+        className={`group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-[12px] bg-surface px-8 text-center elev-raised transition-colors ${
+          fullWidth ? "min-h-[420px] py-24" : "min-h-[320px] py-16"
+        } ${dragging ? "bg-surface-2" : "hover:bg-surface-2"}`}
         style={{ border: `2px dashed ${dragging ? "#3f37c9" : "rgba(63,55,201,0.45)"}` }}
       >
         <motion.div
