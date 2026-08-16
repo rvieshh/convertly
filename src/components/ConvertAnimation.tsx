@@ -31,13 +31,13 @@ export function ConvertAnimation() {
         {[220, 340, 460].map((s, idx) => (
           <motion.div
             key={s}
-            className="absolute rounded-full border border-indigo-500/10"
+            className="absolute rounded-full border border-teal/10"
             style={{ width: s, height: s }}
             animate={{ rotate: 360 }}
             transition={{ duration: 40 + idx * 15, repeat: Infinity, ease: "linear" }}
           />
         ))}
-        <div className="absolute h-64 w-64 rounded-full bg-indigo-600/20 blur-3xl" />
+        <div className="absolute h-64 w-64 rounded-full bg-teal/20 blur-3xl" />
       </div>
 
       {/* Convert cluster: source → badge → target */}
@@ -53,7 +53,7 @@ export function ConvertAnimation() {
             initial={{ rotate: 0 }}
             animate={{ rotate: 360 }}
             transition={{ duration: 1, ease: "easeInOut" }}
-            className="z-10 grid h-11 w-11 place-items-center rounded-full border border-indigo-500/40 bg-zinc-900 text-indigo-400 shadow-lg"
+            className="z-10 grid h-11 w-11 place-items-center rounded-full border border-teal/40 bg-zinc-900 text-teal shadow-lg"
           >
             <RefreshCw className="h-5 w-5" />
           </motion.div>
@@ -76,13 +76,13 @@ function FileCard({ label, accent }: { label: string; accent: boolean }) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 18 }}
       className={`relative grid h-32 w-28 place-items-center rounded-2xl border bg-zinc-900/80 backdrop-blur ${
-        accent ? "border-indigo-500/50" : "border-zinc-700"
+        accent ? "border-teal/50" : "border-zinc-700"
       }`}
     >
       {accent && (
-        <div className="absolute -bottom-2 -right-2 h-16 w-16 rounded-full bg-indigo-500/30 blur-2xl" />
+        <div className="absolute -bottom-2 -right-2 h-16 w-16 rounded-full bg-teal/30 blur-2xl" />
       )}
-      <FileText className={`h-9 w-9 ${accent ? "text-indigo-400" : "text-zinc-400"}`} />
+      <FileText className={`h-9 w-9 ${accent ? "text-teal" : "text-zinc-400"}`} />
       <div className="mt-2 h-5 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.span
@@ -92,7 +92,7 @@ function FileCard({ label, accent }: { label: string; accent: boolean }) {
             exit={{ y: -14, opacity: 0 }}
             transition={{ duration: 0.35 }}
             className={`block text-sm font-bold uppercase tracking-wide ${
-              accent ? "text-indigo-300" : "text-zinc-300"
+              accent ? "text-teal" : "text-zinc-300"
             }`}
           >
             {label}
@@ -109,7 +109,7 @@ function TransferLine() {
     <div className="absolute left-1/2 top-1/2 -z-0 h-px w-40 -translate-x-1/2 -translate-y-1/2 overflow-hidden">
       <div className="h-full w-full bg-gradient-to-r from-transparent via-zinc-600 to-transparent" />
       <motion.div
-        className="absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-indigo-400 shadow-[0_0_8px_2px_rgba(129,140,248,0.7)]"
+        className="absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-teal shadow-[0_0_8px_2px_rgba(57,173,181,0.7)]"
         animate={{ left: ["0%", "100%"] }}
         transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
       />

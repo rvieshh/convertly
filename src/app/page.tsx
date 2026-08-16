@@ -21,13 +21,11 @@ export default function Home() {
         />
 
         {/* Hero: two columns */}
-        <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 lg:grid-cols-2 lg:py-20">
+        <section className="mx-auto grid max-w-[1200px] items-center gap-10 px-8 py-16 lg:grid-cols-2 lg:py-20">
           {/* Left: copy + converter */}
           <div className="order-1">
-            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Convert Any File
-            </h1>
-            <p className="mt-4 max-w-lg text-balance text-zinc-400">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Convert Any File</h1>
+            <p className="mt-4 max-w-lg text-balance text-[18px] leading-relaxed text-zinc-400">
               Drop a file and pick what to turn it into. Convertly handles images, audio, and
               video — right in your browser, no sign-up.
             </p>

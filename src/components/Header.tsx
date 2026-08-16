@@ -2,39 +2,40 @@ import { Repeat } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/70 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
+    <header className="sticky top-0 z-[100] border-b border-white/5 bg-[#1a1a1a]/95 backdrop-blur">
+      <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between px-8">
         <a href="/" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-indigo-500 text-white">
+          <span className="grid h-7 w-7 place-items-center rounded-[6px] bg-teal text-white">
             <Repeat className="h-4 w-4" />
           </span>
-          <span className="text-lg font-extrabold tracking-tight">
-            Convert<span className="text-indigo-400">ly</span>
+          <span className="text-[15px] font-bold tracking-tight text-white">
+            Convert<span className="text-teal">ly</span>
           </span>
         </a>
 
-        <nav className="hidden items-center gap-7 text-sm text-zinc-400 sm:flex">
-          <a href="#converter" className="transition-colors hover:text-white">
-            Convert
-          </a>
-          <a href="#formats" className="transition-colors hover:text-white">
-            Formats
-          </a>
-          <a
-            href="https://github.com/rvieshh/convertly"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-white"
-          >
-            GitHub
-          </a>
+        <nav className="hidden items-center sm:flex">
+          {[
+            { label: "Convert", href: "#converter" },
+            { label: "Formats", href: "#formats" },
+            { label: "GitHub", href: "https://github.com/rvieshh/convertly" },
+          ].map((l) => (
+            <a
+              key={l.label}
+              href={l.href}
+              target={l.href.startsWith("http") ? "_blank" : undefined}
+              rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="px-4 py-3 text-[14px] font-medium leading-5 text-white transition-colors hover:bg-white/10"
+            >
+              {l.label}
+            </a>
+          ))}
         </nav>
 
         <a
           href="https://github.com/rvieshh/convertly"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+          className="rounded-[13.6px] bg-teal px-4 py-1.5 text-[14px] font-medium leading-5 text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors hover:bg-teal-hover"
         >
           Star on GitHub
         </a>
