@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-[100] border-b border-white/5 bg-[#18181b]/95 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-6">
+      <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between px-6 lg:px-12">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2">
           <span className="grid h-7 w-7 place-items-center rounded-[6px] bg-primary text-white">

@@ -16,7 +16,7 @@ const POPULAR: { from: string; to: string }[] = [
 
 export function PopularFormats() {
   return (
-    <section id="formats" className="mx-auto w-full max-w-[1200px] px-8 py-20">
+    <section id="formats" className="mx-auto w-full max-w-[1600px] px-6 lg:px-12 py-20">
       <h2 className="text-center text-2xl font-bold">Popular conversions</h2>
       <p className="mt-2 text-center text-sm text-zinc-500">
         One-click shortcuts for the formats people convert most.

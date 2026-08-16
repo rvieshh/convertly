@@ -9,7 +9,7 @@ import type { ConverterPage } from "@/lib/converterPages";
  */
 export function FormatConverterHero({ page }: { page: ConverterPage }) {
   return (
-    <section className="mx-auto min-h-[calc(100vh-3.5rem)] max-w-[1000px] px-6 py-10">
+    <section className="mx-auto min-h-[calc(100vh-3.5rem)] max-w-[1600px] px-6 py-10 lg:px-12">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {page.fromLabel} Converter

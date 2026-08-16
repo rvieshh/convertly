@@ -11,7 +11,7 @@ export function FormatCatalog() {
 
   return (
     <section id="formats" className="border-t border-line/60">
-      <div className="mx-auto max-w-[1200px] px-8 py-20">
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-12 py-20">
         <div className="max-w-2xl">
           <h2 className="text-2xl font-bold text-white">Format Catalog</h2>
           <p className="mt-2 text-[15px] text-muted">
