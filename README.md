@@ -4,46 +4,55 @@ A free, fast, open-source file converter. Drop a file, pick a target format, and
 download the result — no sign-up, no watermarks. Runs entirely on your own
 infrastructure.
 
-Currently supports **image conversion** (PNG, JPG, WebP, AVIF, TIFF) with audio &
-video (via FFmpeg) and documents on the roadmap.
+Live demo: self-host it (see below). Backed by [Ravisen](https://ravisen.com).
 
 ## Features
 
-- 🖼️ **Image conversion** — PNG ↔ JPG ↔ WebP ↔ AVIF ↔ TIFF, powered by [sharp](https://sharp.pixelplumbing.com/)
-- ⚡ **Fast** — conversions run server-side, streamed straight back to the browser
-- 🎨 **Modern UI** — drag-and-drop, smooth animations, dark theme
-- 🔓 **No account needed** — just convert and download
-- 🧩 **Extensible engine registry** — add a new format/engine in one place
+- **Images** — PNG, JPG, WebP, AVIF, GIF, TIFF, BMP, ICO, HEIC, PSD, TGA and more
+  (via [sharp](https://sharp.pixelplumbing.com/) + [ImageMagick](https://imagemagick.org/))
+- **Audio & Video** — MP4, MKV, MOV, WebM, AVI, MP3, WAV, FLAC, AAC, OGG and more,
+  including audio extraction (via [FFmpeg](https://ffmpeg.org/))
+- **Documents** — PDF, DOCX, ODT, RTF, TXT, HTML, XLSX, PPTX and more
+  (via [LibreOffice](https://www.libreoffice.org/) headless)
+- **Markup** — Markdown, HTML, reStructuredText, EPUB, DOCX (via [Pandoc](https://pandoc.org/))
+- CloudConvert-style UI: drag-and-drop, per-format converter pages, a searchable
+  format picker grouped by category, and a clean dark theme.
 
-## Tech Stack
+## API
 
-- [Next.js 16](https://nextjs.org/) (App Router, Route Handlers)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [sharp](https://sharp.pixelplumbing.com/) for image processing
+Convert a file over HTTP — no SDK required:
 
-## Getting Started
+```bash
+curl -X POST https://your-host/api/convert \
+  -F "file=@photo.png" \
+  -F "target=webp" \
+  -o photo.webp
+```
+
+The endpoint auto-detects the source format and routes to the right engine.
+
+## Getting started
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+### System dependencies
 
-## Roadmap
+The CLI-based engines need these on the host (`apt install` on Debian/Ubuntu):
 
-- [x] Image conversion (sharp)
-- [ ] Audio & video conversion (FFmpeg)
-- [ ] Document conversion (LibreOffice)
-- [ ] Markup conversion (Pandoc)
-- [ ] Batch conversion
-- [ ] Conversion options (quality, resize)
+- `ffmpeg` — audio/video
+- `libreoffice` — documents/spreadsheets/slides
+- `imagemagick` — extended image formats
+- `pandoc` — markup
+
+`sharp` installs automatically via npm.
+
+## Tech stack
+
+Next.js (App Router) · TypeScript · Tailwind CSS · Framer Motion.
 
 ## License
 
-MIT
-
----
-
-Backed by [Ravisen](https://ravisen.com).
+MIT — free for personal and commercial use.

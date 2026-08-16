@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUploadHandoff } from "@/components/UploadContext";
 import { SelectFileButton } from "@/components/SelectFileButton";
+import { FormatPicker } from "@/components/FormatPicker";
 import {
   UploadCloud,
   FileImage,
@@ -292,31 +293,11 @@ export function ConvertWorkspace({
                       {it.sourceExt}
                     </span>
                     <RefreshCw className="hidden h-3.5 w-3.5 text-muted sm:block" />
-                    <div className="relative">
-                      <select
-                        value={it.target}
-                        onChange={(e) => setTarget(it.id, e.target.value)}
-                        className={`cursor-pointer appearance-none rounded-[6px] border bg-transparent py-1.5 pl-3 pr-8 text-sm font-semibold outline-none transition-colors ${
-                          it.target
-                            ? "border-line text-white"
-                            : "border-primary/60 text-primary"
-                        }`}
-                      >
-                        <option value="" disabled className="bg-surface text-muted">
-                          Select Format
-                        </option>
-                        {it.targets.map((t) => (
-                          <option key={t} value={t} className="bg-surface text-white">
-                            {FORMAT_LABELS[t] ?? t.toUpperCase()}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        className={`pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 ${
-                          it.target ? "text-muted" : "text-primary"
-                        }`}
-                      />
-                    </div>
+                    <FormatPicker
+                      targets={it.targets}
+                      value={it.target}
+                      onChange={(fmt) => setTarget(it.id, fmt)}
+                    />
                   </>
                 ) : (
                   <span className="text-xs text-danger">{it.error}</span>
