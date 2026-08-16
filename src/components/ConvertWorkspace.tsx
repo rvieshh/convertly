@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUploadHandoff } from "@/components/UploadContext";
 import {
   UploadCloud,
   FileImage,
@@ -74,16 +76,17 @@ export function ConvertWorkspace({
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const uid = useId();
+  const router = useRouter();
+  const handoff = useUploadHandoff();
 
-  const addFiles = useCallback(
-    (files: FileList | File[]) => {
-      const next: Item[] = [];
-      Array.from(files).forEach((file, idx) => {
+  // Build Item objects from raw files.
+  const makeItems = useCallback(
+    (files: FileList | File[]): Item[] =>
+      Array.from(files).map((file, idx) => {
         const sourceExt = extOf(file.name);
         const targets = targetsFor(sourceExt);
-        const preset =
-          defaultTarget && targets.includes(defaultTarget) ? defaultTarget : "";
-        next.push({
+        const preset = defaultTarget && targets.includes(defaultTarget) ? defaultTarget : "";
+        return {
           id: `${uid}-${Date.now()}-${idx}`,
           file,
           sourceExt,
@@ -91,22 +94,42 @@ export function ConvertWorkspace({
           target: preset,
           stage: targets.length ? "ready" : "error",
           error: targets.length ? undefined : `.${sourceExt} not supported yet`,
-        });
-      });
-      setItems((prev) => {
-        // On the homepage, reflect the first uploaded format in the URL
-        // (e.g. /jpg-converter) without a full navigation, so the file stays
-        // loaded but the page reads as a format-specific converter.
-        if (reflectUrl && prev.length === 0 && next.length > 0) {
-          const ext = next[0].sourceExt;
-          if (ext && targetsFor(ext).length > 0 && typeof window !== "undefined") {
-            window.history.replaceState(null, "", `/${ext}-converter`);
-          }
+        } as Item;
+      }),
+    [defaultTarget, uid],
+  );
+
+  const addToState = useCallback(
+    (files: FileList | File[]) => setItems((prev) => [...prev, ...makeItems(files)]),
+    [makeItems],
+  );
+
+  // On a format page, drain any files handed off from the homepage on mount.
+  useEffect(() => {
+    if (!reflectUrl && handoff?.hasPending()) {
+      const pending = handoff.drain();
+      if (pending.length) addToState(pending);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const addFiles = useCallback(
+    (files: FileList | File[]) => {
+      const arr = Array.from(files);
+      // Homepage: if the first file maps to a supported converter route, stash
+      // the files and navigate to /{ext}-converter so the dedicated page opens
+      // with the files already loaded (CloudConvert behaviour).
+      if (reflectUrl && items.length === 0 && arr.length > 0) {
+        const ext = extOf(arr[0].name);
+        if (ext && targetsFor(ext).length > 0 && handoff) {
+          handoff.stash(arr);
+          router.push(`/${ext}-converter`);
+          return;
         }
-        return [...prev, ...next];
-      });
+      }
+      addToState(files);
     },
-    [defaultTarget, reflectUrl, uid],
+    [reflectUrl, items.length, handoff, router, addToState],
   );
 
   const onDrop = useCallback(
