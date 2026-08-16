@@ -1,265 +1,63 @@
-"use client";
-
-import { useCallback, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { UploadCloud, FileIcon, ArrowRight, Download, Loader2, X, Check } from "lucide-react";
-import { targetsFor, FORMAT_LABELS } from "@/lib/formats";
-
-type Stage = "idle" | "ready" | "converting" | "done" | "error";
-
-interface Job {
-  file: File;
-  sourceExt: string;
-  targets: string[];
-  target: string;
-  stage: Stage;
-  resultUrl?: string;
-  resultName?: string;
-  error?: string;
-}
-
-function extOf(name: string) {
-  return (name.split(".").pop() ?? "").toLowerCase();
-}
+import { Header } from "@/components/Header";
+import { Converter } from "@/components/Converter";
+import { ConvertAnimation } from "@/components/ConvertAnimation";
+import { PopularFormats } from "@/components/PopularFormats";
 
 export default function Home() {
-  const [job, setJob] = useState<Job | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const acceptFile = useCallback((file: File) => {
-    const sourceExt = extOf(file.name);
-    const targets = targetsFor(sourceExt);
-    setJob({
-      file,
-      sourceExt,
-      targets,
-      target: targets[0] ?? "",
-      stage: targets.length ? "ready" : "error",
-      error: targets.length ? undefined : `Format .${sourceExt} belum didukung`,
-    });
-  }, []);
-
-  const onDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      setDragging(false);
-      const file = e.dataTransfer.files?.[0];
-      if (file) acceptFile(file);
-    },
-    [acceptFile],
-  );
-
-  const convert = useCallback(async () => {
-    if (!job || !job.target) return;
-    setJob((j) => (j ? { ...j, stage: "converting", error: undefined } : j));
-    try {
-      const fd = new FormData();
-      fd.append("file", job.file);
-      fd.append("target", job.target);
-      const res = await fetch("/api/convert", { method: "POST", body: fd });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? `Gagal (${res.status})`);
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const base = job.file.name.replace(/\.[^.]+$/, "");
-      setJob((j) =>
-        j ? { ...j, stage: "done", resultUrl: url, resultName: `${base}.${job.target}` } : j,
-      );
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Konversi gagal";
-      setJob((j) => (j ? { ...j, stage: "error", error: msg } : j));
-    }
-  }, [job]);
-
-  const reset = () => setJob(null);
-
   return (
-    <main className="relative mx-auto flex min-h-screen max-w-4xl flex-col items-center px-5 py-16">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-          Convert Any File
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-balance text-zinc-400">
-          Drop a file and pick what to turn it into. Convertly handles images, audio, and video
-          — right in your browser, no sign-up.
-        </p>
-      </motion.div>
+    <>
+      <Header />
 
-      {/* Drop zone / job card */}
-      <div className="mt-12 w-full">
-        <AnimatePresence mode="wait">
-          {!job && (
-            <motion.div
-              key="drop"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragging(true);
-              }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={onDrop}
-              onClick={() => inputRef.current?.click()}
-              className={`group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed p-16 transition-colors ${
-                dragging
-                  ? "border-indigo-500 bg-indigo-500/5"
-                  : "border-zinc-700 hover:border-zinc-500 bg-zinc-900/40"
-              }`}
+      <main className="relative overflow-hidden">
+        {/* faint grid backdrop */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #27272a 1px, transparent 1px), linear-gradient(to bottom, #27272a 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            maskImage: "radial-gradient(ellipse at top, black, transparent 70%)",
+          }}
+        />
+
+        {/* Hero: two columns */}
+        <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 lg:grid-cols-2 lg:py-20">
+          {/* Left: copy + converter */}
+          <div className="order-1">
+            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Convert Any File
+            </h1>
+            <p className="mt-4 max-w-lg text-balance text-zinc-400">
+              Drop a file and pick what to turn it into. Convertly handles images, audio, and
+              video — right in your browser, no sign-up.
+            </p>
+            <div className="mt-8">
+              <Converter />
+            </div>
+          </div>
+
+          {/* Right: convert animation */}
+          <div className="order-2 hidden lg:flex lg:items-center lg:justify-center">
+            <ConvertAnimation />
+          </div>
+        </section>
+
+        <PopularFormats />
+
+        <footer className="border-t border-zinc-800/60 py-10 text-center text-sm text-zinc-600">
+          <p>
+            Backed by{" "}
+            <a
+              href="https://ravisen.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-zinc-400 transition-colors hover:text-indigo-400"
             >
-              <motion.div
-                animate={{ y: dragging ? -6 : 0 }}
-                className="grid h-16 w-16 place-items-center rounded-full bg-indigo-500/10 text-indigo-400"
-              >
-                <UploadCloud className="h-8 w-8" />
-              </motion.div>
-              <div className="text-center">
-                <p className="text-lg font-semibold">Select your file to convert</p>
-                <p className="mt-1 text-sm text-zinc-500">or drop your file here</p>
-              </div>
-              <span className="mt-2 rounded-lg bg-indigo-500 px-5 py-2.5 text-sm font-bold text-white transition-colors group-hover:bg-indigo-400">
-                Select File
-              </span>
-              <input
-                ref={inputRef}
-                type="file"
-                className="hidden"
-                onChange={(e) => e.target.files?.[0] && acceptFile(e.target.files[0])}
-              />
-            </motion.div>
-          )}
-
-          {job && (
-            <motion.div
-              key="job"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6"
-            >
-              {/* file row */}
-              <div className="flex items-center gap-4">
-                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-zinc-800 text-zinc-300">
-                  <FileIcon className="h-6 w-6" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold">{job.file.name}</p>
-                  <p className="text-xs text-zinc-500">
-                    {(job.file.size / 1024 / 1024).toFixed(2)} MB · .{job.sourceExt}
-                  </p>
-                </div>
-                <button
-                  onClick={reset}
-                  className="grid h-9 w-9 place-items-center rounded-lg text-zinc-500 hover:bg-zinc-800 hover:text-white"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              {/* conversion controls */}
-              {job.targets.length > 0 && (
-                <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <span className="rounded-lg bg-zinc-800 px-3 py-2 text-sm font-bold uppercase text-zinc-300">
-                    {job.sourceExt}
-                  </span>
-                  <ArrowRight className="h-4 w-4 text-zinc-600" />
-                  <select
-                    value={job.target}
-                    onChange={(e) => setJob((j) => (j ? { ...j, target: e.target.value } : j))}
-                    disabled={job.stage === "converting"}
-                    className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm font-semibold text-white outline-none focus:border-indigo-500"
-                  >
-                    {job.targets.map((t) => (
-                      <option key={t} value={t}>
-                        {FORMAT_LABELS[t] ?? t.toUpperCase()}
-                      </option>
-                    ))}
-                  </select>
-
-                  <div className="ml-auto">
-                    {job.stage !== "done" && (
-                      <button
-                        onClick={convert}
-                        disabled={job.stage === "converting"}
-                        className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-indigo-400 disabled:opacity-60"
-                      >
-                        {job.stage === "converting" ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" /> Converting…
-                          </>
-                        ) : (
-                          "Convert"
-                        )}
-                      </button>
-                    )}
-                    {job.stage === "done" && job.resultUrl && (
-                      <a
-                        href={job.resultUrl}
-                        download={job.resultName}
-                        className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-emerald-400"
-                      >
-                        <Download className="h-4 w-4" /> Download
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* progress line animation */}
-              <AnimatePresence>
-                {job.stage === "converting" && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="mt-5 h-1 overflow-hidden rounded-full bg-zinc-800"
-                  >
-                    <motion.div
-                      className="h-full w-1/3 rounded-full bg-indigo-500"
-                      animate={{ x: ["-100%", "300%"] }}
-                      transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {job.stage === "done" && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm text-emerald-400"
-                >
-                  <Check className="h-4 w-4" /> Selesai — file siap diunduh.
-                </motion.p>
-              )}
-              {job.error && <p className="mt-4 text-sm text-red-400">{job.error}</p>}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Footer */}
-      <footer className="mt-auto pt-20 text-center text-sm text-zinc-600">
-        <p>
-          Backed by{" "}
-          <a
-            href="https://ravisen.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-zinc-400 transition-colors hover:text-indigo-400"
-          >
-            Ravisen
-          </a>
-        </p>
-      </footer>
-    </main>
+              Ravisen
+            </a>
+          </p>
+        </footer>
+      </main>
+    </>
   );
 }
