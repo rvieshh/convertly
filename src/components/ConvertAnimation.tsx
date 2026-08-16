@@ -26,7 +26,7 @@ export function ConvertAnimation() {
   const [from, to] = PAIRS[i];
 
   return (
-    <div className="relative flex h-[400px] w-full items-center justify-center">
+    <div className="relative flex h-[280px] w-full items-center justify-center">
       {/* Background orbit rings + radial glow */}
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
         {[240, 380, 520].map((s, idx) => (

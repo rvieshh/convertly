@@ -23,9 +23,9 @@ export default function Home() {
           }}
         />
 
-        <section className="mx-auto max-w-[1600px] px-6 py-14 lg:px-12 lg:py-16">
+        <section className="mx-auto max-w-[1600px] px-6 pt-5 pb-12 lg:px-12">
           {/* Top row: heading (left) + convert animation (right) */}
-          <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Convert Any File</h1>
               <p className="mt-4 max-w-xl text-balance text-[18px] leading-relaxed text-zinc-400">
@@ -39,12 +39,12 @@ export default function Home() {
           </div>
 
           {/* Centered upload box (the focal element) */}
-          <div className="mx-auto mt-10 w-full max-w-3xl">
+          <div className="mx-auto mt-6 w-full max-w-3xl">
             <ConvertWorkspace reflectUrl />
           </div>
 
           {/* Footer teasers */}
-          <div className="mx-auto mt-8 flex max-w-3xl items-center justify-between text-sm">
+          <div className="mx-auto mt-6 flex max-w-3xl items-center justify-between text-sm">
             <a
               href="#formats"
               className="flex items-center gap-2 text-muted transition-colors hover:text-white"

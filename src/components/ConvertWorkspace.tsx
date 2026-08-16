@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUploadHandoff } from "@/components/UploadContext";
+import { SelectFileButton } from "@/components/SelectFileButton";
 import {
   UploadCloud,
   FileImage,
@@ -141,6 +142,22 @@ export function ConvertWorkspace({
     [addFiles],
   );
 
+  // "By URL" upload: fetch the remote file into a File and add it.
+  const importFromUrl = useCallback(async () => {
+    const url = typeof window !== "undefined" ? window.prompt("Paste a direct file URL:") : null;
+    if (!url) return;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(String(res.status));
+      const blob = await res.blob();
+      const name = url.split("/").pop()?.split("?")[0] || "download";
+      const file = new File([blob], name, { type: blob.type });
+      addFiles([file]);
+    } catch {
+      if (typeof window !== "undefined") window.alert("Couldn't fetch that URL.");
+    }
+  }, [addFiles]);
+
   const setTarget = (id: string, target: string) =>
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, target } : it)));
   const removeItem = (id: string) =>
@@ -213,9 +230,12 @@ export function ConvertWorkspace({
           <p className="text-lg font-semibold text-white">Select your file to convert</p>
           <p className="mt-1 text-sm text-muted">or drop your file here</p>
         </div>
-        <span className="mt-1 rounded-[5px] bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors group-hover:bg-primary-hover">
-          Select File
-        </span>
+        <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+          <SelectFileButton
+            onDevice={() => inputRef.current?.click()}
+            onUrl={importFromUrl}
+          />
+        </div>
         <input
           ref={inputRef}
           type="file"
