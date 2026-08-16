@@ -31,13 +31,13 @@ export function ConvertAnimation() {
         {[220, 340, 460].map((s, idx) => (
           <motion.div
             key={s}
-            className="absolute rounded-full border border-teal/10"
+            className="absolute rounded-full border border-primary/10"
             style={{ width: s, height: s }}
             animate={{ rotate: 360 }}
             transition={{ duration: 40 + idx * 15, repeat: Infinity, ease: "linear" }}
           />
         ))}
-        <div className="absolute h-64 w-64 rounded-full bg-teal/20 blur-3xl" />
+        <div className="absolute h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
       </div>
 
       {/* Convert cluster: source → badge → target */}
@@ -52,7 +52,7 @@ export function ConvertAnimation() {
             initial={{ rotate: 0 }}
             animate={{ rotate: 360 }}
             transition={{ duration: 1, ease: "easeInOut" }}
-            className="z-10 grid h-11 w-11 place-items-center rounded-full border border-teal/40 bg-zinc-900 text-teal shadow-lg"
+            className="z-10 grid h-11 w-11 place-items-center rounded-full border border-primary/40 bg-zinc-900 text-primary shadow-lg"
           >
             <RefreshCw className="h-5 w-5" />
           </motion.div>
@@ -75,13 +75,13 @@ function FileCard({ label, accent }: { label: string; accent: boolean }) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 18 }}
       className={`relative grid h-32 w-28 place-items-center rounded-2xl border bg-zinc-900/80 backdrop-blur ${
-        accent ? "border-teal/50" : "border-zinc-700"
+        accent ? "border-primary/50" : "border-zinc-700"
       }`}
     >
       {accent && (
-        <div className="absolute -bottom-2 -right-2 h-16 w-16 rounded-full bg-teal/30 blur-2xl" />
+        <div className="absolute -bottom-2 -right-2 h-16 w-16 rounded-full bg-primary/30 blur-2xl" />
       )}
-      <FileText className={`h-9 w-9 ${accent ? "text-teal" : "text-zinc-400"}`} />
+      <FileText className={`h-9 w-9 ${accent ? "text-primary" : "text-zinc-400"}`} />
       <div className="mt-2 h-5 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.span
@@ -91,7 +91,7 @@ function FileCard({ label, accent }: { label: string; accent: boolean }) {
             exit={{ y: -14, opacity: 0 }}
             transition={{ duration: 0.35 }}
             className={`block text-sm font-bold uppercase tracking-wide ${
-              accent ? "text-teal" : "text-zinc-300"
+              accent ? "text-primary" : "text-zinc-300"
             }`}
           >
             {label}

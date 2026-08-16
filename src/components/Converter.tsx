@@ -92,24 +92,24 @@ export function Converter() {
             onDragLeave={() => setDragging(false)}
             onDrop={onDrop}
             onClick={() => inputRef.current?.click()}
-            className={`group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-[13.6px] bg-white px-8 py-14 text-center shadow-[rgba(0,0,0,0.05)_0px_2px_8px_0px] transition-colors ${
-              dragging ? "bg-[#39adb50d]" : "hover:bg-[#39adb508]"
+            className={`group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-[14px] bg-surface px-8 py-14 text-center elev-raised transition-colors ${
+              dragging ? "bg-surface-2" : "hover:bg-surface-2"
             }`}
             style={{
-              border: `2px dashed ${dragging ? "#39ADB5" : "rgba(57,173,181,0.55)"}`,
+              border: `2px dashed ${dragging ? "#3f37c9" : "rgba(63,55,201,0.45)"}`,
             }}
           >
             <motion.div
               animate={{ y: dragging ? -6 : 0 }}
-              className="grid h-16 w-16 place-items-center rounded-full bg-teal/10 text-teal"
+              className="grid h-16 w-16 place-items-center rounded-full bg-primary/15 text-primary"
             >
               <UploadCloud className="h-8 w-8" />
             </motion.div>
             <div>
-              <p className="text-lg font-semibold text-[#5a5f66]">Select your file to convert</p>
-              <p className="mt-1 text-sm text-[#90a4ae]">or drop your file here</p>
+              <p className="text-lg font-semibold text-white">Select your file to convert</p>
+              <p className="mt-1 text-sm text-muted">or drop your file here</p>
             </div>
-            <span className="mt-1 rounded-[13.6px] bg-teal px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors group-hover:bg-teal-hover">
+            <span className="mt-1 rounded-[14px] bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.4)_0px_8px_24px_0px] transition-colors group-hover:bg-primary-hover">
               Select File
             </span>
             <input
@@ -127,7 +127,7 @@ export function Converter() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="elev-raised rounded-[13.6px] border border-white/[0.06] bg-surface/80 p-6"
+            className="elev-raised rounded-[14px] border border-white/[0.06] bg-surface p-6"
           >
             <div className="flex items-center gap-4">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-[6px] bg-white/5 text-zinc-300">
@@ -157,7 +157,7 @@ export function Converter() {
                   value={job.target}
                   onChange={(e) => setJob((j) => (j ? { ...j, target: e.target.value } : j))}
                   disabled={job.stage === "converting"}
-                  className="rounded-[6px] border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-white outline-none focus:border-teal"
+                  className="rounded-[6px] border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-white outline-none focus:border-primary"
                 >
                   {job.targets.map((t) => (
                     <option key={t} value={t} className="bg-surface">
@@ -171,7 +171,7 @@ export function Converter() {
                     <button
                       onClick={convert}
                       disabled={job.stage === "converting"}
-                      className="inline-flex items-center gap-2 rounded-[13.6px] bg-teal px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors hover:bg-teal-hover disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-[13.6px] bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors hover:bg-primary-hover disabled:opacity-60"
                     >
                       {job.stage === "converting" ? (
                         <>
@@ -204,7 +204,7 @@ export function Converter() {
                   className="mt-5 h-1 overflow-hidden rounded-full bg-white/10"
                 >
                   <motion.div
-                    className="h-full w-1/3 rounded-full bg-teal"
+                    className="h-full w-1/3 rounded-full bg-primary"
                     animate={{ x: ["-100%", "300%"] }}
                     transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
                   />
@@ -221,7 +221,7 @@ export function Converter() {
                 <Check className="h-4 w-4" /> Selesai — file siap diunduh.
               </motion.p>
             )}
-            {job.error && <p className="mt-4 text-sm text-coral">{job.error}</p>}
+            {job.error && <p className="mt-4 text-sm text-danger">{job.error}</p>}
           </motion.div>
         )}
       </AnimatePresence>
