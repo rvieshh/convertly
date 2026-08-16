@@ -61,7 +61,13 @@ function kindLabel(ext: string) {
   return "File";
 }
 
-export function ConvertWorkspace({ defaultTarget }: { defaultTarget?: string }) {
+export function ConvertWorkspace({
+  defaultTarget,
+  reflectUrl = false,
+}: {
+  defaultTarget?: string;
+  reflectUrl?: boolean;
+}) {
   const [items, setItems] = useState<Item[]>([]);
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -85,9 +91,20 @@ export function ConvertWorkspace({ defaultTarget }: { defaultTarget?: string }) 
           error: targets.length ? undefined : `.${sourceExt} not supported yet`,
         });
       });
-      setItems((prev) => [...prev, ...next]);
+      setItems((prev) => {
+        // On the homepage, reflect the first uploaded format in the URL
+        // (e.g. /jpg-converter) without a full navigation, so the file stays
+        // loaded but the page reads as a format-specific converter.
+        if (reflectUrl && prev.length === 0 && next.length > 0) {
+          const ext = next[0].sourceExt;
+          if (ext && targetsFor(ext).length > 0 && typeof window !== "undefined") {
+            window.history.replaceState(null, "", `/${ext}-converter`);
+          }
+        }
+        return [...prev, ...next];
+      });
     },
-    [defaultTarget, uid],
+    [defaultTarget, reflectUrl, uid],
   );
 
   const onDrop = useCallback(

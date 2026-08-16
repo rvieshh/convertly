@@ -32,7 +32,7 @@ export default function Home() {
               video — right in your browser, no sign-up.
             </p>
             <div className="mt-8">
-              <ConvertWorkspace />
+              <ConvertWorkspace reflectUrl />
             </div>
           </div>
 
