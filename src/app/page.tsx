@@ -40,22 +40,6 @@ export default function Home() {
           <div className="mx-auto mt-6 w-full max-w-3xl">
             <ConvertWorkspace reflectUrl />
           </div>
-
-          {/* Footer teasers */}
-          <div className="mx-auto mt-6 flex max-w-3xl items-center justify-between text-sm">
-            <a
-              href="#formats"
-              className="flex items-center gap-2 text-muted transition-colors hover:text-white"
-            >
-              Format Catalog
-            </a>
-            <a
-              href="#security"
-              className="flex items-center gap-2 text-muted transition-colors hover:text-white"
-            >
-              Data Security
-            </a>
-          </div>
         </section>
 
         <CatalogSecurity />
