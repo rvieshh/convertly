@@ -106,3 +106,50 @@ export function resolveEngine(sourceExt: string, targetExt: string): EngineId | 
   }
   return null;
 }
+
+/** Catalog categories surfaced in the Format Catalog section. Only lists
+ *  formats an engine can actually read, so the count never overstates. */
+export interface Category {
+  id: string;
+  label: string;
+  formats: string[];
+  common: [string, string][];
+}
+
+export const CATEGORIES: Category[] = [
+  {
+    id: "image",
+    label: "Images",
+    formats: imageExts.map((e) => e.toUpperCase()),
+    common: [
+      ["PNG", "WEBP"],
+      ["JPG", "PNG"],
+      ["WEBP", "JPG"],
+      ["PNG", "AVIF"],
+    ],
+  },
+  {
+    id: "video",
+    label: "Video",
+    formats: videoExts.map((e) => e.toUpperCase()),
+    common: [
+      ["MP4", "GIF"],
+      ["MOV", "MP4"],
+      ["WEBM", "MP4"],
+    ],
+  },
+  {
+    id: "audio",
+    label: "Audio",
+    formats: audioExts.map((e) => e.toUpperCase()),
+    common: [
+      ["WAV", "MP3"],
+      ["M4A", "MP3"],
+      ["FLAC", "MP3"],
+    ],
+  },
+];
+
+export const TOTAL_FORMATS = Array.from(
+  new Set(CATEGORIES.flatMap((c) => c.formats)),
+).length;
