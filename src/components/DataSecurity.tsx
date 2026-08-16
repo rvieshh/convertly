@@ -33,7 +33,7 @@ export function DataSecurity() {
           {POINTS.map((p) => (
             <div
               key={p.title}
-              className="elev-raised rounded-[14px] border border-white/[0.06] bg-surface p-6"
+              className="elev-raised rounded-[12px] border border-white/[0.06] bg-surface p-6"
             >
               <div className="grid h-10 w-10 place-items-center rounded-[8px] bg-primary/15 text-primary">
                 <p.icon className="h-5 w-5" />

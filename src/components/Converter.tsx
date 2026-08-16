@@ -92,7 +92,7 @@ export function Converter() {
             onDragLeave={() => setDragging(false)}
             onDrop={onDrop}
             onClick={() => inputRef.current?.click()}
-            className={`group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-[14px] bg-surface px-8 py-14 text-center elev-raised transition-colors ${
+            className={`group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-[12px] bg-surface px-8 py-14 text-center elev-raised transition-colors ${
               dragging ? "bg-surface-2" : "hover:bg-surface-2"
             }`}
             style={{
@@ -109,7 +109,7 @@ export function Converter() {
               <p className="text-lg font-semibold text-white">Select your file to convert</p>
               <p className="mt-1 text-sm text-muted">or drop your file here</p>
             </div>
-            <span className="mt-1 rounded-[14px] bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.4)_0px_8px_24px_0px] transition-colors group-hover:bg-primary-hover">
+            <span className="mt-1 rounded-[8px] bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.4)_0px_8px_24px_0px] transition-colors group-hover:bg-primary-hover">
               Select File
             </span>
             <input
@@ -127,7 +127,7 @@ export function Converter() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="elev-raised rounded-[14px] border border-white/[0.06] bg-surface p-6"
+            className="elev-raised rounded-[12px] border border-white/[0.06] bg-surface p-6"
           >
             <div className="flex items-center gap-4">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-[6px] bg-white/5 text-zinc-300">
@@ -171,7 +171,7 @@ export function Converter() {
                     <button
                       onClick={convert}
                       disabled={job.stage === "converting"}
-                      className="inline-flex items-center gap-2 rounded-[13.6px] bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors hover:bg-primary-hover disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-[8px] bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors hover:bg-primary-hover disabled:opacity-60"
                     >
                       {job.stage === "converting" ? (
                         <>
@@ -186,7 +186,7 @@ export function Converter() {
                     <a
                       href={job.resultUrl}
                       download={job.resultName}
-                      className="inline-flex items-center gap-2 rounded-[13.6px] bg-success px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                      className="inline-flex items-center gap-2 rounded-[8px] bg-success px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
                     >
                       <Download className="h-4 w-4" /> Download
                     </a>

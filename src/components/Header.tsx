@@ -35,7 +35,7 @@ export function Header() {
           href="https://github.com/rvieshh/convertly"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-[13.6px] bg-primary px-4 py-1.5 text-[14px] font-medium leading-5 text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors hover:bg-primary-hover"
+          className="rounded-[8px] bg-primary px-4 py-1.5 text-[14px] font-medium leading-5 text-white shadow-[rgba(0,0,0,0.35)_0px_8px_24px_0px] transition-colors hover:bg-primary-hover"
         >
           Star on GitHub
         </a>
