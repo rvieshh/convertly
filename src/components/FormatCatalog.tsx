@@ -26,7 +26,7 @@ export function FormatCatalog() {
             <button
               key={c.id}
               onClick={() => setActive(i)}
-              className={`rounded-[8px] px-4 py-2 text-sm font-medium transition-colors ${
+              className={`rounded-[5px] px-4 py-2 text-sm font-medium transition-colors ${
                 i === active
                   ? "bg-primary text-white"
                   : "bg-surface text-zinc-300 hover:bg-surface-2"
@@ -53,7 +53,7 @@ export function FormatCatalog() {
             {cat.formats.map((f) => (
               <div
                 key={f}
-                className="rounded-[8px] border border-line/70 bg-surface px-3 py-3 text-center text-xs font-semibold tracking-wide text-zinc-300"
+                className="rounded-[5px] border border-line/70 bg-surface px-3 py-3 text-center text-xs font-semibold tracking-wide text-zinc-300"
               >
                 {f}
               </div>
@@ -71,7 +71,7 @@ export function FormatCatalog() {
               <a
                 key={`${from}-${to}`}
                 href="#converter"
-                className="group inline-flex items-center gap-2 rounded-[8px] border border-line/70 bg-surface px-3 py-2 text-sm font-semibold transition-colors hover:border-primary/50"
+                className="group inline-flex items-center gap-2 rounded-[5px] border border-line/70 bg-surface px-3 py-2 text-sm font-semibold transition-colors hover:border-primary/50"
               >
                 <span className="text-zinc-300">{from}</span>
                 <ArrowRight className="h-3.5 w-3.5 text-primary transition-transform group-hover:translate-x-0.5" />

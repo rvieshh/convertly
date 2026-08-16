@@ -213,7 +213,7 @@ export function ConvertWorkspace({
           <p className="text-lg font-semibold text-white">Select your file to convert</p>
           <p className="mt-1 text-sm text-muted">or drop your file here</p>
         </div>
-        <span className="mt-1 rounded-[8px] bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors group-hover:bg-primary-hover">
+        <span className="mt-1 rounded-[5px] bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors group-hover:bg-primary-hover">
           Select File
         </span>
         <input
@@ -241,7 +241,7 @@ export function ConvertWorkspace({
               className="flex flex-wrap items-center gap-3 px-5 py-4 sm:flex-nowrap"
             >
               {/* file glyph */}
-              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-surface-2 text-zinc-400">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-[5px] bg-surface-2 text-zinc-400">
                 <FileGlyph ext={it.sourceExt} className="h-5 w-5" />
               </div>
 
@@ -259,7 +259,7 @@ export function ConvertWorkspace({
                   <a
                     href={it.resultUrl}
                     download={it.resultName}
-                    className="inline-flex items-center gap-1.5 rounded-[8px] bg-success px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                    className="inline-flex items-center gap-1.5 rounded-[5px] bg-success px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
                   >
                     <Download className="h-4 w-4" /> Download
                   </a>
@@ -329,7 +329,7 @@ export function ConvertWorkspace({
         <div className="flex items-center gap-2">
           <button
             onClick={() => inputRef.current?.click()}
-            className="inline-flex items-center gap-1.5 rounded-[8px] bg-surface-2 px-3.5 py-2 text-sm font-medium text-zinc-200 transition-colors hover:bg-white/10"
+            className="inline-flex items-center gap-1.5 rounded-[5px] bg-surface-2 px-3.5 py-2 text-sm font-medium text-zinc-200 transition-colors hover:bg-white/10"
           >
             <Plus className="h-4 w-4" /> Add more files
           </button>
@@ -343,7 +343,7 @@ export function ConvertWorkspace({
           <button
             onClick={convertAll}
             disabled={!allReady || anyConverting}
-            className="inline-flex items-center gap-1.5 rounded-[8px] bg-primary px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 rounded-[5px] bg-primary px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
           >
             {anyConverting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             Convert

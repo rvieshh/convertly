@@ -93,7 +93,7 @@ export function Header() {
           href="https://github.com/rvieshh/convertly"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-[8px] bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+          className="rounded-[5px] bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
         >
           Star on GitHub
         </a>

@@ -35,7 +35,7 @@ export function DataSecurity() {
               key={p.title}
               className="elev-raised rounded-[12px] border border-white/[0.06] bg-surface p-6"
             >
-              <div className="grid h-10 w-10 place-items-center rounded-[8px] bg-primary/15 text-primary">
+              <div className="grid h-10 w-10 place-items-center rounded-[5px] bg-primary/15 text-primary">
                 <p.icon className="h-5 w-5" />
               </div>
               <h3 className="mt-4 text-base font-semibold text-white">{p.title}</h3>
