@@ -96,7 +96,7 @@ export function Converter() {
               dragging ? "bg-[#39adb50d]" : "hover:bg-[#39adb508]"
             }`}
             style={{
-              border: `2px dashed ${dragging ? "#39ADB5" : "rgba(57,173,181,0.3)"}`,
+              border: `2px dashed ${dragging ? "#39ADB5" : "rgba(57,173,181,0.55)"}`,
             }}
           >
             <motion.div

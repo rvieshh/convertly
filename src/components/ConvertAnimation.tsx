@@ -46,8 +46,7 @@ export function ConvertAnimation() {
         <FileCard label={from} accent={false} />
 
         {/* Connector + convert badge */}
-        <div className="relative flex flex-col items-center">
-          <TransferLine />
+        <div className="relative flex flex-col items-center px-2">
           <motion.div
             key={`badge-${i}`}
             initial={{ rotate: 0 }}
@@ -103,16 +102,3 @@ function FileCard({ label, accent }: { label: string; accent: boolean }) {
   );
 }
 
-// Animated dashed line with a light pulse travelling along it (the "transfer").
-function TransferLine() {
-  return (
-    <div className="absolute left-1/2 top-1/2 -z-0 h-px w-40 -translate-x-1/2 -translate-y-1/2 overflow-hidden">
-      <div className="h-full w-full bg-gradient-to-r from-transparent via-zinc-600 to-transparent" />
-      <motion.div
-        className="absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-teal shadow-[0_0_8px_2px_rgba(57,173,181,0.7)]"
-        animate={{ left: ["0%", "100%"] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-      />
-    </div>
-  );
-}
