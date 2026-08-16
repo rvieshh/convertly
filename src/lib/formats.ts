@@ -1,155 +1,197 @@
-// Central format + engine registry. Each engine declares the formats it can
-// read (from) and write (to). The converter API resolves the right engine for
-// a requested conversion. Adding a new engine here automatically expands the
-// supported conversion matrix surfaced in the UI.
+// ---------------------------------------------------------------------------
+// Convertly format registry
+// ---------------------------------------------------------------------------
+// Every conversion is resolved here: given a source extension and a target
+// extension, which engine handles it. Engines are ordered by preference; the
+// first one that can read the source AND write the target wins.
+//
+// Engines:
+//   image   -> sharp        (fast, common web images)
+//   magick  -> ImageMagick  (wide image format coverage, raw, icons, etc.)
+//   media   -> FFmpeg       (audio + video)
+//   doc     -> LibreOffice  (office documents, spreadsheets, slides)
+//   markup  -> Pandoc       (markdown / html / rst / epub / plain text)
+// ---------------------------------------------------------------------------
 
-export type EngineId = "image" | "media" | "document" | "markup";
-
-export interface FormatDef {
-  ext: string; // canonical extension, lowercase, no dot
-  label: string; // human label shown in the UI
-  mime: string;
-}
+export type EngineId = "image" | "magick" | "media" | "doc" | "markup";
 
 export interface Engine {
   id: EngineId;
-  label: string;
-  /** Formats this engine can convert FROM. */
   inputs: string[];
-  /** Formats this engine can convert TO. */
   outputs: string[];
 }
 
-// ---- Image (sharp) ----
-const IMAGE_FORMATS: FormatDef[] = [
-  { ext: "png", label: "PNG", mime: "image/png" },
-  { ext: "jpg", label: "JPG", mime: "image/jpeg" },
-  { ext: "jpeg", label: "JPEG", mime: "image/jpeg" },
-  { ext: "webp", label: "WebP", mime: "image/webp" },
-  { ext: "avif", label: "AVIF", mime: "image/avif" },
-  { ext: "gif", label: "GIF", mime: "image/gif" },
-  { ext: "tiff", label: "TIFF", mime: "image/tiff" },
+// ---- format sets --------------------------------------------------------
+
+// sharp: reliable, fast web image I/O
+const sharpIn = ["png", "jpg", "jpeg", "webp", "avif", "tiff", "gif", "svg"];
+const sharpOut = ["png", "jpg", "jpeg", "webp", "avif", "tiff"];
+
+// ImageMagick: broad raster coverage (read + write)
+const magickImg = [
+  "png", "jpg", "jpeg", "webp", "avif", "gif", "tiff", "bmp", "ico",
+  "heic", "heif", "tga", "psd", "ppm", "pgm", "xcf", "dds", "dib",
+  "jp2", "pcx", "wbmp", "eps",
 ];
 
-// ---- Media (ffmpeg) — added in a later phase ----
-const AUDIO_FORMATS: FormatDef[] = [
-  { ext: "mp3", label: "MP3", mime: "audio/mpeg" },
-  { ext: "wav", label: "WAV", mime: "audio/wav" },
-  { ext: "ogg", label: "OGG", mime: "audio/ogg" },
-  { ext: "m4a", label: "M4A", mime: "audio/mp4" },
-  { ext: "flac", label: "FLAC", mime: "audio/flac" },
-];
+// FFmpeg audio + video
+const audioExts = ["mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma", "aiff", "amr"];
+const videoExts = ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpeg", "mpg", "3gp", "m4v", "ts", "ogv"];
+const mediaIn = [...videoExts, ...audioExts];
+const mediaOut = [...audioExts, ...videoExts, "gif"];
 
-const VIDEO_FORMATS: FormatDef[] = [
-  { ext: "mp4", label: "MP4", mime: "video/mp4" },
-  { ext: "webm", label: "WebM", mime: "video/webm" },
-  { ext: "mkv", label: "MKV", mime: "video/x-matroska" },
-  { ext: "mov", label: "MOV", mime: "video/quicktime" },
-  { ext: "gif", label: "GIF", mime: "image/gif" },
-];
+// LibreOffice office documents
+const docText = ["doc", "docx", "odt", "rtf", "txt", "html", "fodt", "dot", "wps"];
+const docSheet = ["xls", "xlsx", "ods", "csv", "fods"];
+const docSlide = ["ppt", "pptx", "odp", "fodp"];
+const docIn = [...docText, ...docSheet, ...docSlide, "pdf"];
+const docOut = ["pdf", "docx", "odt", "rtf", "txt", "html", "xlsx", "ods", "csv", "pptx", "odp"];
 
-export const FORMAT_LABELS: Record<string, string> = Object.fromEntries(
-  [...IMAGE_FORMATS, ...AUDIO_FORMATS, ...VIDEO_FORMATS].map((f) => [f.ext, f.label]),
-);
-
-export const MIME_BY_EXT: Record<string, string> = Object.fromEntries(
-  [...IMAGE_FORMATS, ...AUDIO_FORMATS, ...VIDEO_FORMATS].map((f) => [f.ext, f.mime]),
-);
-
-const imageExts = IMAGE_FORMATS.map((f) => f.ext);
-const audioExts = AUDIO_FORMATS.map((f) => f.ext);
-const videoExts = VIDEO_FORMATS.map((f) => f.ext);
+// Pandoc markup
+const markupIn = ["md", "markdown", "html", "htm", "rst", "tex", "docx", "epub", "txt", "org"];
+const markupOut = ["html", "md", "pdf", "docx", "epub", "txt", "rst"];
 
 export const ENGINES: Engine[] = [
-  {
-    id: "image",
-    label: "Image",
-    inputs: imageExts,
-    // sharp cannot write gif frames reliably as animation; keep static outputs
-    outputs: ["png", "jpg", "webp", "avif", "tiff"],
-  },
-  {
-    id: "media",
-    label: "Audio & Video",
-    inputs: [...videoExts, ...audioExts],
-    outputs: [...audioExts, "mp4", "webm", "gif"],
-  },
+  { id: "image", inputs: sharpIn, outputs: sharpOut },
+  { id: "magick", inputs: magickImg, outputs: magickImg },
+  { id: "media", inputs: mediaIn, outputs: mediaOut },
+  { id: "doc", inputs: docIn, outputs: docOut },
+  { id: "markup", inputs: markupIn, outputs: markupOut },
 ];
 
-/** All extensions we accept as an upload. */
+// ---- MIME map (for download responses) ----------------------------------
+
+export const MIME_BY_EXT: Record<string, string> = {
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  webp: "image/webp",
+  avif: "image/avif",
+  tiff: "image/tiff",
+  gif: "image/gif",
+  bmp: "image/bmp",
+  ico: "image/x-icon",
+  heic: "image/heic",
+  svg: "image/svg+xml",
+  psd: "image/vnd.adobe.photoshop",
+  eps: "application/postscript",
+  mp3: "audio/mpeg",
+  wav: "audio/wav",
+  flac: "audio/flac",
+  aac: "audio/aac",
+  ogg: "audio/ogg",
+  opus: "audio/opus",
+  m4a: "audio/mp4",
+  mp4: "video/mp4",
+  mkv: "video/x-matroska",
+  avi: "video/x-msvideo",
+  mov: "video/quicktime",
+  webm: "video/webm",
+  pdf: "application/pdf",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  odt: "application/vnd.oasis.opendocument.text",
+  rtf: "application/rtf",
+  txt: "text/plain",
+  html: "text/html",
+  md: "text/markdown",
+  epub: "application/epub+zip",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ods: "application/vnd.oasis.opendocument.spreadsheet",
+  csv: "text/csv",
+  ppt: "application/vnd.ms-powerpoint",
+  pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  odp: "application/vnd.oasis.opendocument.presentation",
+};
+
+export const FORMAT_LABELS: Record<string, string> = {
+  jpg: "JPG",
+  jpeg: "JPEG",
+  png: "PNG",
+  webp: "WebP",
+  avif: "AVIF",
+  tiff: "TIFF",
+  gif: "GIF",
+  bmp: "BMP",
+  ico: "ICO",
+  heic: "HEIC",
+  svg: "SVG",
+  mp3: "MP3",
+  mp4: "MP4",
+  wav: "WAV",
+  flac: "FLAC",
+  docx: "DOCX",
+  pdf: "PDF",
+  md: "Markdown",
+};
+
+// ---- resolution helpers -------------------------------------------------
+
 export function allInputExts(): string[] {
   return Array.from(new Set(ENGINES.flatMap((e) => e.inputs))).sort();
 }
 
-/** Given a source extension, list every target extension we can produce. */
+/** Given a source extension, every target extension we can produce. */
 export function targetsFor(sourceExt: string): string[] {
   const ext = sourceExt.toLowerCase().replace(/^\./, "");
   const targets = new Set<string>();
   for (const engine of ENGINES) {
     if (engine.inputs.includes(ext)) {
-      for (const out of engine.outputs) {
-        if (out !== ext) targets.add(out);
-      }
+      for (const out of engine.outputs) if (out !== ext) targets.add(out);
     }
   }
   return Array.from(targets).sort();
 }
 
-/** Resolve which engine handles a source→target conversion. */
+/** Resolve which engine handles source -> target (first match wins). */
 export function resolveEngine(sourceExt: string, targetExt: string): EngineId | null {
   const from = sourceExt.toLowerCase().replace(/^\./, "");
   const to = targetExt.toLowerCase().replace(/^\./, "");
   for (const engine of ENGINES) {
-    if (engine.inputs.includes(from) && engine.outputs.includes(to)) {
-      return engine.id;
-    }
+    if (engine.inputs.includes(from) && engine.outputs.includes(to)) return engine.id;
   }
   return null;
 }
 
-/** Catalog categories surfaced in the Format Catalog section. Only lists
- *  formats an engine can actually read, so the count never overstates. */
+// ---- catalog (UI) -------------------------------------------------------
+
 export interface Category {
   id: string;
   label: string;
   formats: string[];
-  common: [string, string][];
 }
 
 export const CATEGORIES: Category[] = [
   {
     id: "image",
-    label: "Images",
-    formats: imageExts.map((e) => e.toUpperCase()),
-    common: [
-      ["PNG", "WEBP"],
-      ["JPG", "PNG"],
-      ["WEBP", "JPG"],
-      ["PNG", "AVIF"],
-    ],
+    label: "Image",
+    formats: Array.from(new Set([...sharpIn, ...magickImg]))
+      .map((e) => e.toUpperCase())
+      .sort(),
   },
+  { id: "video", label: "Video", formats: videoExts.map((e) => e.toUpperCase()).sort() },
+  { id: "audio", label: "Audio", formats: audioExts.map((e) => e.toUpperCase()).sort() },
   {
-    id: "video",
-    label: "Video",
-    formats: videoExts.map((e) => e.toUpperCase()),
-    common: [
-      ["MP4", "GIF"],
-      ["MOV", "MP4"],
-      ["WEBM", "MP4"],
-    ],
+    id: "document",
+    label: "Document",
+    formats: Array.from(new Set([...docText, "pdf", ...markupIn]))
+      .map((e) => e.toUpperCase())
+      .sort(),
   },
-  {
-    id: "audio",
-    label: "Audio",
-    formats: audioExts.map((e) => e.toUpperCase()),
-    common: [
-      ["WAV", "MP3"],
-      ["M4A", "MP3"],
-      ["FLAC", "MP3"],
-    ],
-  },
+  { id: "spreadsheet", label: "Spreadsheet", formats: docSheet.map((e) => e.toUpperCase()).sort() },
+  { id: "slides", label: "Slides", formats: docSlide.map((e) => e.toUpperCase()).sort() },
 ];
 
-// Sum of per-category counts so the headline total matches the numbers shown
-// next to each category label (formats can repeat across categories).
+/** Which catalog category an extension belongs to (for the format picker). */
+export function categoryOf(ext: string): string {
+  const e = ext.toLowerCase().replace(/^\./, "");
+  if (audioExts.includes(e)) return "audio";
+  if (videoExts.includes(e)) return "video";
+  if (docSheet.includes(e)) return "spreadsheet";
+  if (docSlide.includes(e)) return "slides";
+  if ([...docText, "pdf", ...markupIn].includes(e)) return "document";
+  return "image";
+}
+
 export const TOTAL_FORMATS = CATEGORIES.reduce((n, c) => n + c.formats.length, 0);
