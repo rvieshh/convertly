@@ -1,9 +1,7 @@
 import { Header } from "@/components/Header";
 import { ConvertWorkspace } from "@/components/ConvertWorkspace";
 import { ConvertAnimation } from "@/components/ConvertAnimation";
-import { PopularFormats } from "@/components/PopularFormats";
-import { FormatCatalog } from "@/components/FormatCatalog";
-import { DataSecurity } from "@/components/DataSecurity";
+import { CatalogSecurity } from "@/components/CatalogSecurity";
 import { Footer } from "@/components/Footer";
 
 export default function Home() {
@@ -60,9 +58,7 @@ export default function Home() {
           </div>
         </section>
 
-        <PopularFormats />
-        <FormatCatalog />
-        <DataSecurity />
+        <CatalogSecurity />
       </main>
 
       <Footer />

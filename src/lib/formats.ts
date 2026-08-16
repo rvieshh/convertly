@@ -150,6 +150,6 @@ export const CATEGORIES: Category[] = [
   },
 ];
 
-export const TOTAL_FORMATS = Array.from(
-  new Set(CATEGORIES.flatMap((c) => c.formats)),
-).length;
+// Sum of per-category counts so the headline total matches the numbers shown
+// next to each category label (formats can repeat across categories).
+export const TOTAL_FORMATS = CATEGORIES.reduce((n, c) => n + c.formats.length, 0);

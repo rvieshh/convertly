@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FormatConverterHero } from "@/components/FormatConverterHero";
-import { FormatCatalog } from "@/components/FormatCatalog";
-import { DataSecurity } from "@/components/DataSecurity";
+import { CatalogSecurity } from "@/components/CatalogSecurity";
 import { getConverterPage, allConverterSlugs } from "@/lib/converterPages";
 
 export function generateStaticParams() {
@@ -36,8 +35,7 @@ export default async function ConverterSlugPage({
       <Header />
       <main className="relative overflow-hidden">
         <FormatConverterHero page={page} />
-        <FormatCatalog />
-        <DataSecurity />
+        <CatalogSecurity />
       </main>
       <Footer />
     </>
