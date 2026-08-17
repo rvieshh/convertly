@@ -203,6 +203,18 @@ export function resolveEngine(sourceExt: string, targetExt: string): EngineId | 
   return null;
 }
 
+/** Every source extension that can be converted INTO the given target. */
+export function sourcesFor(targetExt: string): string[] {
+  const to = targetExt.toLowerCase().replace(/^\./, "");
+  const sources = new Set<string>();
+  for (const engine of ENGINES) {
+    if (engine.outputs.includes(to)) {
+      for (const inp of engine.inputs) if (inp !== to) sources.add(inp);
+    }
+  }
+  return Array.from(sources).sort();
+}
+
 // ---- catalog (UI) -------------------------------------------------------
 
 export interface Category {

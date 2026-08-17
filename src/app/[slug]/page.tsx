@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FormatConverterHero } from "@/components/FormatConverterHero";
-import { CatalogSecurity } from "@/components/CatalogSecurity";
+import { ConversionTypes } from "@/components/ConversionTypes";
 import { ApiSection } from "@/components/ApiSection";
 import { getConverterPage, allConverterSlugs } from "@/lib/converterPages";
 
@@ -68,7 +68,10 @@ export default async function ConverterSlugPage({
       <Header />
       <main className="relative overflow-hidden">
         <FormatConverterHero page={page} />
-        <CatalogSecurity />
+        <ConversionTypes
+          format={page.from}
+          target={page.slug.includes("-to-") ? page.suggestedTarget : undefined}
+        />
         <ApiSection />
       </main>
       <Footer />
