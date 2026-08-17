@@ -27,29 +27,48 @@ export interface Engine {
 const sharpIn = ["png", "jpg", "jpeg", "webp", "avif", "tiff", "gif", "svg"];
 const sharpOut = ["png", "jpg", "jpeg", "webp", "avif", "tiff"];
 
-// ImageMagick: broad raster coverage (read + write)
+// ImageMagick: broad raster + vector coverage (read + write), verified via
+// `convert -list format`. Kept to the formats users actually reach for.
 const magickImg = [
-  "png", "jpg", "jpeg", "webp", "avif", "gif", "tiff", "bmp", "ico",
-  "heic", "heif", "tga", "psd", "ppm", "pgm", "xcf", "dds", "dib",
-  "jp2", "pcx", "wbmp", "eps",
+  "png", "jpg", "jpeg", "webp", "avif", "gif", "tiff", "bmp", "ico", "cur",
+  "heic", "heif", "tga", "psd", "psb", "ppm", "pgm", "pbm", "pnm", "xcf",
+  "dds", "dib", "jp2", "j2k", "jpc", "pcx", "wbmp", "eps", "ai", "svg", "svgz",
+  "pdf", "hdr", "exr", "pfm", "pict", "pct", "sgi", "sun", "ras", "xbm", "xpm",
+  "xwd", "fits", "fax", "miff", "mng", "apng", "dpx", "otb", "palm", "pcd",
+  "picon", "viff", "vips", "wpg", "cin", "jng",
 ];
 
-// FFmpeg audio + video
-const audioExts = ["mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma", "aiff", "amr"];
-const videoExts = ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpeg", "mpg", "3gp", "m4v", "ts", "ogv"];
+// FFmpeg audio + video (verified muxers).
+const audioExts = [
+  "mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma", "aiff", "amr",
+  "ac3", "wv", "caf", "au",
+];
+const videoExts = [
+  "mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpeg", "mpg", "3gp",
+  "m4v", "ts", "ogv", "asf", "dv", "f4v", "m2ts", "mts", "vob", "swf", "mxf",
+];
 const mediaIn = [...videoExts, ...audioExts];
 const mediaOut = [...audioExts, ...videoExts, "gif"];
 
-// LibreOffice office documents
-const docText = ["doc", "docx", "odt", "rtf", "txt", "html", "fodt", "dot", "wps"];
-const docSheet = ["xls", "xlsx", "ods", "csv", "fods"];
-const docSlide = ["ppt", "pptx", "odp", "fodp"];
+// LibreOffice office documents (headless --convert-to filters).
+const docText = [
+  "doc", "docx", "odt", "rtf", "txt", "html", "fodt", "dot", "dotx", "wps",
+  "abw", "lwp", "sdw", "hwp", "pages",
+];
+const docSheet = ["xls", "xlsx", "ods", "csv", "fods", "xlsm", "dif", "slk", "dbf"];
+const docSlide = ["ppt", "pptx", "odp", "fodp", "pps", "ppsx"];
 const docIn = [...docText, ...docSheet, ...docSlide, "pdf"];
-const docOut = ["pdf", "docx", "odt", "rtf", "txt", "html", "xlsx", "ods", "csv", "pptx", "odp"];
+const docOut = [
+  "pdf", "docx", "doc", "odt", "rtf", "txt", "html", "epub",
+  "xlsx", "xls", "ods", "csv", "pptx", "ppt", "odp",
+];
 
-// Pandoc markup
-const markupIn = ["md", "markdown", "html", "htm", "rst", "tex", "docx", "epub", "txt", "org"];
-const markupOut = ["html", "md", "pdf", "docx", "epub", "txt", "rst"];
+// Pandoc markup / lightweight documents.
+const markupIn = [
+  "md", "markdown", "html", "htm", "rst", "tex", "latex", "docx", "epub",
+  "txt", "org", "rtf", "odt", "textile", "opml",
+];
+const markupOut = ["html", "md", "pdf", "docx", "epub", "txt", "rst", "latex", "odt", "rtf"];
 
 export const ENGINES: Engine[] = [
   { id: "image", inputs: sharpIn, outputs: sharpOut },
