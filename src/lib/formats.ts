@@ -89,9 +89,16 @@ const archiveExts = ["zip", "7z", "tar", "gz", "tgz", "bz2", "tbz2", "xz", "rar"
 const archiveIn = ["zip", "7z", "tar", "gz", "tgz", "bz2", "tbz2", "xz", "rar"];
 const archiveOut = ["zip", "7z", "tar", "gz", "tgz", "bz2", "xz"];
 
+// Camera RAW formats — read-only (convert to standard images via ImageMagick's
+// DNG/LibRaw delegate). You can't write these, so they're inputs only.
+const rawIn = [
+  "cr2", "cr3", "crw", "nef", "arw", "dng", "raf", "orf", "rw2", "pef",
+  "srw", "3fr", "erf", "mrw", "dcr", "kdc", "x3f",
+];
+
 export const ENGINES: Engine[] = [
   { id: "image", inputs: sharpIn, outputs: sharpOut },
-  { id: "magick", inputs: magickImg, outputs: magickImg },
+  { id: "magick", inputs: [...magickImg, ...rawIn], outputs: magickImg },
   { id: "media", inputs: mediaIn, outputs: mediaOut },
   { id: "doc", inputs: docIn, outputs: docOut },
   { id: "markup", inputs: markupIn, outputs: markupOut },
@@ -227,11 +234,13 @@ export const CATEGORIES: Category[] = [
   { id: "font", label: "Font", formats: Array.from(new Set(fontExts)).map((e) => e.toUpperCase()).sort() },
   { id: "vector", label: "Vector", formats: Array.from(new Set([...vectorIn, ...vectorOut])).map((e) => e.toUpperCase()).sort() },
   { id: "archive", label: "Archive", formats: Array.from(new Set(archiveExts)).map((e) => e.toUpperCase()).sort() },
+  { id: "raw", label: "Camera RAW", formats: rawIn.map((e) => e.toUpperCase()).sort() },
 ];
 
 /** Which catalog category an extension belongs to (for the format picker). */
 export function categoryOf(ext: string): string {
   const e = ext.toLowerCase().replace(/^\./, "");
+  if (rawIn.includes(e)) return "raw";
   if (audioExts.includes(e)) return "audio";
   if (videoExts.includes(e)) return "video";
   if (archiveExts.includes(e)) return "archive";

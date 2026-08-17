@@ -2,8 +2,24 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Boxes, ShieldCheck, Trash2, UserCheck, ArrowRight } from "lucide-react";
+import { Boxes, ShieldCheck, Trash2, UserCheck, ArrowRight, Image, Film, Music, FileText, Sheet, Presentation, BookOpen, Type, PenTool, Archive, Box, Camera } from "lucide-react";
 import { CATEGORIES, TOTAL_FORMATS } from "@/lib/formats";
+
+// Icon per catalog category (matches the category id in formats.ts).
+const CAT_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  image: Image,
+  video: Film,
+  audio: Music,
+  document: FileText,
+  spreadsheet: Sheet,
+  slides: Presentation,
+  ebook: BookOpen,
+  font: Type,
+  vector: PenTool,
+  archive: Archive,
+  raw: Camera,
+  cad: Box,
+};
 
 const SECURITY = [
   {
@@ -51,19 +67,27 @@ export function CatalogSecurity() {
             </p>
 
             {/* Category row */}
-            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
-              {CATEGORIES.map((c, i) => (
-                <button
-                  key={c.id}
-                  onClick={() => setActive(i)}
-                  className={`text-sm font-medium transition-colors ${
-                    i === active ? "text-primary" : "text-zinc-400 hover:text-white"
-                  }`}
-                >
-                  {c.label}
-                  <sup className="ml-0.5 text-[10px] text-muted">{c.formats.length}</sup>
-                </button>
-              ))}
+            <div className="mt-5 flex flex-wrap gap-2">
+              {CATEGORIES.map((c, i) => {
+                const Icon = CAT_ICON[c.id] ?? Boxes;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => setActive(i)}
+                    className={`inline-flex items-center gap-1.5 rounded-[6px] border px-2.5 py-1.5 text-sm font-medium transition-colors ${
+                      i === active
+                        ? "border-primary/50 bg-primary/15 text-primary"
+                        : "border-line/70 bg-surface text-zinc-300 hover:border-primary/40 hover:text-white"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {c.label}
+                    <span className={`text-xs ${i === active ? "text-primary/70" : "text-muted"}`}>
+                      {c.formats.length}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             <div className="my-6 border-t border-line/70" />
