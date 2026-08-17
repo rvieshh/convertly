@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // sharp ships native binaries — keep it external so the server bundle can
-  // require it at runtime instead of trying to bundle the .node files.
-  serverExternalPackages: ["sharp"],
+  // Native-binary packages must stay external so the server bundle requires
+  // them at runtime instead of trying to bundle their .node files.
+  serverExternalPackages: ["sharp", "better-sqlite3", "bcryptjs"],
 };
 
 export default nextConfig;

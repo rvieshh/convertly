@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 AGENTS.md
+
+# Convertly runtime data (SQLite DB, never commit)
+/data/
+*.db
+*.db-journal
+*.db-wal

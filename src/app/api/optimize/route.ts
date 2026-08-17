@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { compressPdf, compressPng, compressJpg, ocrPdf } from "@/lib/engines/cli";
+import { logConversion } from "@/lib/stats";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -49,6 +50,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unknown operation" }, { status: 422 });
     }
 
+    logConversion({
+      sourceExt: ext || op,
+      targetExt: op.startsWith("compress") ? ext || op : "pdf",
+      kind: "optimize",
+      op,
+      ok: true,
+      bytesIn: input.length,
+      bytesOut: output.length,
+      ms: 0,
+    });
     return new NextResponse(new Uint8Array(output), {
       status: 200,
       headers: {

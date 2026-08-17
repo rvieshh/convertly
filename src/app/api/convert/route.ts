@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveEngine, MIME_BY_EXT } from "@/lib/formats";
 import { convertImage } from "@/lib/engines/image";
+import { logConversion } from "@/lib/stats";
 import {
   convertMedia,
   convertDocument,
@@ -43,6 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     const input = Buffer.from(await file.arrayBuffer());
+    const startedAt = Date.now();
 
     let output: Buffer;
     switch (engine) {
@@ -79,6 +81,16 @@ export async function POST(req: NextRequest) {
 
     const base = file.name.replace(/\.[^.]+$/, "");
     const mime = MIME_BY_EXT[target] ?? "application/octet-stream";
+    logConversion({
+      sourceExt,
+      targetExt: target,
+      kind: "convert",
+      op: engine,
+      ok: true,
+      bytesIn: input.length,
+      bytesOut: output.length,
+      ms: Date.now() - startedAt,
+    });
     return new NextResponse(new Uint8Array(output), {
       status: 200,
       headers: {
