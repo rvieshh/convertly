@@ -43,11 +43,17 @@ function iconFor(ext: string) {
   return ICON_BY_CAT[categoryOf(ext)] ?? FileIcon;
 }
 
-export function HeroConverter() {
+export function HeroConverter({
+  initialSource,
+  initialTarget,
+}: {
+  initialSource?: string;
+  initialTarget?: string;
+} = {}) {
   const handoff = useUploadHandoff();
-  const [source, setSource] = useState("png");
-  const [target, setTarget] = useState("");
-  const [touched, setTouched] = useState(false);
+  const [source, setSource] = useState(initialSource || "png");
+  const [target, setTarget] = useState(initialTarget || "");
+  const [touched, setTouched] = useState(Boolean(initialSource));
   const sources = allInputExts();
   const targets = targetsFor(source);
 

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { FormatConverterHero } from "@/components/FormatConverterHero";
-import { ConversionTypes } from "@/components/ConversionTypes";
+import { ConverterView } from "@/components/ConverterView";
 import { getConverterPage, allConverterSlugs } from "@/lib/converterPages";
 
 export function generateStaticParams() {
@@ -47,7 +46,8 @@ export default async function ConverterSlugPage({
   const page = getConverterPage(slug);
   if (!page) notFound();
 
-  // Structured data helps search engines understand the tool.
+  const isPair = page.slug.includes("-to-");
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -65,13 +65,11 @@ export default async function ConverterSlugPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <main className="relative overflow-hidden">
-        <FormatConverterHero page={page} />
-        <ConversionTypes
-          format={page.from}
-          target={page.slug.includes("-to-") ? page.suggestedTarget : undefined}
-        />
-      </main>
+      <ConverterView
+        initialSource={page.from}
+        initialTarget={isPair ? page.suggestedTarget : undefined}
+        showApi={false}
+      />
       <Footer />
     </>
   );
