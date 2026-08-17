@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { ConvertWorkspace } from "@/components/ConvertWorkspace";
 import { HeroConverter } from "@/components/HeroConverter";
 import { HeroHeadline } from "@/components/HeroHeadline";
-import { CatalogSecurity } from "@/components/CatalogSecurity";
+import { HomeSection2 } from "@/components/HomeSection2";
 import { ApiSection } from "@/components/ApiSection";
 import { Footer } from "@/components/Footer";
 
@@ -40,7 +40,7 @@ export default function Home() {
           </div>
         </section>
 
-        <CatalogSecurity />
+        <HomeSection2 />
         <ApiSection />
       </main>
 

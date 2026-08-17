@@ -4,7 +4,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FormatConverterHero } from "@/components/FormatConverterHero";
 import { ConversionTypes } from "@/components/ConversionTypes";
-import { ApiSection } from "@/components/ApiSection";
 import { getConverterPage, allConverterSlugs } from "@/lib/converterPages";
 
 export function generateStaticParams() {
@@ -72,7 +71,6 @@ export default async function ConverterSlugPage({
           format={page.from}
           target={page.slug.includes("-to-") ? page.suggestedTarget : undefined}
         />
-        <ApiSection />
       </main>
       <Footer />
     </>
