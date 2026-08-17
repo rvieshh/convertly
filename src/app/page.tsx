@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { ConvertWorkspace } from "@/components/ConvertWorkspace";
 import { HeroConverter } from "@/components/HeroConverter";
+import { HeroHeadline } from "@/components/HeroHeadline";
 import { CatalogSecurity } from "@/components/CatalogSecurity";
 import { ApiSection } from "@/components/ApiSection";
 import { Footer } from "@/components/Footer";
@@ -26,11 +27,7 @@ export default function Home() {
           {/* Top row: heading (left) + convert animation (right) */}
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Convert Any File</h1>
-              <p className="mt-4 max-w-xl text-balance text-[18px] leading-relaxed text-zinc-400">
-                Drop a file and pick what to turn it into. Convertly handles images, audio, and
-                video — right in your browser, no sign-up.
-              </p>
+              <HeroHeadline />
             </div>
             <div className="hidden lg:flex lg:items-center lg:justify-center">
               <HeroConverter />

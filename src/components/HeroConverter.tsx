@@ -2,13 +2,46 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, RefreshCw } from "lucide-react";
-import { targetsFor, allInputExts } from "@/lib/formats";
+import {
+  RefreshCw,
+  FileImage,
+  FileAudio,
+  FileVideo,
+  FileText,
+  FileSpreadsheet,
+  Presentation,
+  BookOpen,
+  Type,
+  PenTool,
+  FileArchive,
+  Camera,
+  File as FileIcon,
+} from "lucide-react";
+import { targetsFor, allInputExts, categoryOf } from "@/lib/formats";
 import { FormatPicker } from "@/components/FormatPicker";
 import { useUploadHandoff } from "@/components/UploadContext";
 
 // Auto-cycle these source formats until the user interacts.
 const DEMO = ["png", "mp4", "docx", "webp", "mov", "epub"];
+
+// Icon per format, derived from its catalog category.
+const ICON_BY_CAT: Record<string, React.ComponentType<{ className?: string }>> = {
+  image: FileImage,
+  audio: FileAudio,
+  video: FileVideo,
+  document: FileText,
+  spreadsheet: FileSpreadsheet,
+  slides: Presentation,
+  ebook: BookOpen,
+  font: Type,
+  vector: PenTool,
+  archive: FileArchive,
+  raw: Camera,
+};
+
+function iconFor(ext: string) {
+  return ICON_BY_CAT[categoryOf(ext)] ?? FileIcon;
+}
 
 export function HeroConverter() {
   const handoff = useUploadHandoff();
@@ -79,7 +112,7 @@ export function HeroConverter() {
       <div className="relative flex items-center gap-4">
         <FormatPicker targets={sources} value={source} placeholder="Any file" onChange={pickSource}>
           <Card>
-            <FileText className="h-8 w-8 text-zinc-400" />
+            {(() => { const I = iconFor(source); return <I className="h-8 w-8 text-zinc-400" />; })()}
             <span className="mt-2 text-lg font-bold text-white">{source.toUpperCase()}</span>
           </Card>
         </FormatPicker>
@@ -99,7 +132,7 @@ export function HeroConverter() {
 
         <FormatPicker targets={targets} value={target} placeholder="Any" onChange={pickTarget}>
           <Card accent>
-            <FileText className="h-8 w-8 text-primary" />
+            {(() => { const I = target ? iconFor(target) : FileIcon; return <I className="h-8 w-8 text-primary" />; })()}
             <span className={`mt-2 text-lg font-bold ${target ? "text-white" : "text-primary"}`}>
               {target ? target.toUpperCase() : "ANY"}
             </span>
