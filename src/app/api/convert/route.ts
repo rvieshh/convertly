@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { resolveEngine, MIME_BY_EXT } from "@/lib/formats";
 import { convertImage } from "@/lib/engines/image";
 import { logConversion } from "@/lib/stats";
+import { checkUploadAllowed, recordUpload } from "@/lib/usage";
 import {
   convertMedia,
   convertDocument,
@@ -45,6 +46,16 @@ export async function POST(req: NextRequest) {
 
     const input = Buffer.from(await file.arrayBuffer());
     const startedAt = Date.now();
+
+    // Enforce guest upload + file-size limits.
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    const limit = checkUploadAllowed(ip, input.length, false);
+    if (!limit.allowed) {
+      return NextResponse.json({ error: limit.reason ?? "Upload not allowed" }, { status: 429 });
+    }
 
     let output: Buffer;
     switch (engine) {
@@ -91,6 +102,7 @@ export async function POST(req: NextRequest) {
       bytesOut: output.length,
       ms: Date.now() - startedAt,
     });
+    recordUpload(ip);
     return new NextResponse(new Uint8Array(output), {
       status: 200,
       headers: {

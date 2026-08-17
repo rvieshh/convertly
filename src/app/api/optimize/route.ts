@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { compressPdf, compressPng, compressJpg, ocrPdf } from "@/lib/engines/cli";
 import { logConversion } from "@/lib/stats";
+import { checkUploadAllowed, recordUpload } from "@/lib/usage";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -20,6 +21,15 @@ export async function POST(req: NextRequest) {
     }
     const input = Buffer.from(await file.arrayBuffer());
     const ext = extOf(file.name);
+
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    const limit = checkUploadAllowed(ip, input.length, false);
+    if (!limit.allowed) {
+      return NextResponse.json({ error: limit.reason ?? "Upload not allowed" }, { status: 429 });
+    }
 
     let output: Buffer;
     let outName = file.name;
@@ -60,6 +70,7 @@ export async function POST(req: NextRequest) {
       bytesOut: output.length,
       ms: 0,
     });
+    recordUpload(ip);
     return new NextResponse(new Uint8Array(output), {
       status: 200,
       headers: {
