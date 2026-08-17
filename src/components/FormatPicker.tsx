@@ -12,6 +12,7 @@ interface Props {
   onChange: (fmt: string) => void;
   placeholder?: string;
   children?: ReactNode; // custom trigger; falls back to the default button
+  defaultCategory?: string; // which sidebar category to open on first render
 }
 
 const CAT_ORDER = CATEGORIES.map((c) => c.id);
@@ -24,10 +25,10 @@ const CAT_LABEL: Record<string, string> = Object.fromEntries(
  * with a search field, a category sidebar, and a grid of output formats.
  * Replaces the plain <select>.
  */
-export function FormatPicker({ targets, value, onChange, placeholder, children }: Props) {
+export function FormatPicker({ targets, value, onChange, placeholder, children, defaultCategory }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [cat, setCat] = useState<string>("all");
+  const [cat, setCat] = useState<string>(defaultCategory ?? "all");
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
@@ -41,6 +42,15 @@ export function FormatPicker({ targets, value, onChange, placeholder, children }
     }
     return g;
   }, [targets]);
+
+  // When the picker opens, snap to the default category (and clear search) so a
+  // category page always opens in its own category, not wherever it was left.
+  useEffect(() => {
+    if (open) {
+      setCat(defaultCategory ?? "all");
+      setQuery("");
+    }
+  }, [open, defaultCategory]);
 
   const cats = useMemo(
     () => CAT_ORDER.filter((c) => grouped[c]?.length),

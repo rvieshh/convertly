@@ -75,7 +75,11 @@ export function ConverterView({
             <HeroHeadline category={category ? { title: category.title, description: category.description } : undefined} />
           </div>
           <div className="hidden lg:flex lg:items-center lg:justify-center">
-            <HeroConverter initialSource={heroSeed} initialTarget={category ? undefined : initialTarget} />
+            <HeroConverter
+              initialSource={heroSeed}
+              initialTarget={category ? undefined : initialTarget}
+              sourceCategory={category?.id}
+            />
           </div>
         </div>
 

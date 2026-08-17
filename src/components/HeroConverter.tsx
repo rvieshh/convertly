@@ -46,9 +46,11 @@ function iconFor(ext: string) {
 export function HeroConverter({
   initialSource,
   initialTarget,
+  sourceCategory,
 }: {
   initialSource?: string;
   initialTarget?: string;
+  sourceCategory?: string;
 } = {}) {
   const handoff = useUploadHandoff();
   const [source, setSource] = useState(initialSource || "png");
@@ -116,7 +118,7 @@ export function HeroConverter({
       </div>
 
       <div className="relative flex items-center gap-4">
-        <FormatPicker targets={sources} value={source} placeholder="Any file" onChange={pickSource}>
+        <FormatPicker targets={sources} value={source} placeholder="Any file" onChange={pickSource} defaultCategory={sourceCategory}>
           <Card>
             {(() => { const I = iconFor(source); return <I className="h-8 w-8 text-zinc-400" />; })()}
             <span className="mt-2 text-lg font-bold text-white">{source.toUpperCase()}</span>
