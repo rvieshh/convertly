@@ -6,32 +6,56 @@ import { HeroConverter } from "@/components/HeroConverter";
 import { HeroHeadline } from "@/components/HeroHeadline";
 import { HomeSection2 } from "@/components/HomeSection2";
 import { ApiSection } from "@/components/ApiSection";
+import { AvailableConverters } from "@/components/AvailableConverters";
 import { useUploadHandoff } from "@/components/UploadContext";
 
+export interface CategoryInfo {
+  id: string;
+  label: string;
+  title: string;
+  description: string;
+  formats: string[];
+}
+
 /**
- * The shared landing/converter body used by BOTH the homepage (/) and the
- * per-format routes (/png-converter, /png-to-jpg). Passing initialSource /
- * initialTarget seeds the hero so a reloaded converter URL renders exactly
- * like the homepage after the user picked those formats — no separate,
- * plainer layout.
+ * The shared landing/converter body used by the homepage (/), the per-format
+ * routes (/png-converter, /png-to-jpg) AND the category routes
+ * (/document-converter, /image-converter, ...).
+ *
+ *  - initialSource/initialTarget seed the hero so a reloaded format URL renders
+ *    exactly like the homepage after the user picked those formats.
+ *  - category switches the page into "category mode": a category headline and
+ *    an AVAILABLE CONVERTERS grid instead of the per-format section 2.
  */
 export function ConverterView({
   initialSource,
   initialTarget,
   showApi = true,
+  category,
 }: {
   initialSource?: string;
   initialTarget?: string;
   showApi?: boolean;
+  category?: CategoryInfo;
 }) {
   const h = useUploadHandoff();
 
-  // Seed the shared hero state from the route on first mount.
+  // Seed shared hero state from the route on first mount.
   useEffect(() => {
-    if (initialSource) h?.setHeroSource(initialSource);
-    if (initialTarget) h?.setHeroTarget(initialTarget);
+    if (category) {
+      // Category pages don't lock a single source; start neutral so the hero
+      // shows the category's first format but the headline stays category-wide.
+      h?.setHeroSource("");
+      h?.setHeroTarget("");
+    } else {
+      if (initialSource) h?.setHeroSource(initialSource);
+      if (initialTarget) h?.setHeroTarget(initialTarget);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // On a category page the hero previews the first format of that category.
+  const heroSeed = category ? category.formats[0] : initialSource;
 
   return (
     <main className="relative overflow-hidden">
@@ -48,19 +72,23 @@ export function ConverterView({
       <section className="mx-auto max-w-[1600px] px-6 pt-5 pb-12 lg:px-12">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div>
-            <HeroHeadline />
+            <HeroHeadline category={category ? { title: category.title, description: category.description } : undefined} />
           </div>
           <div className="hidden lg:flex lg:items-center lg:justify-center">
-            <HeroConverter initialSource={initialSource} initialTarget={initialTarget} />
+            <HeroConverter initialSource={heroSeed} initialTarget={category ? undefined : initialTarget} />
           </div>
         </div>
 
         <div className="mx-auto mt-6 w-full max-w-3xl">
-          <ConvertWorkspace reflectUrl defaultTarget={initialTarget} />
+          <ConvertWorkspace reflectUrl defaultTarget={category ? undefined : initialTarget} />
         </div>
       </section>
 
-      <HomeSection2 />
+      {category ? (
+        <AvailableConverters categoryLabel={category.label} formats={category.formats} />
+      ) : (
+        <HomeSection2 />
+      )}
       {showApi && <ApiSection />}
     </main>
   );

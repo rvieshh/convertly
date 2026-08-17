@@ -52,28 +52,45 @@ export function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 6 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute left-0 top-full mt-1 w-[440px] rounded-[12px] border border-line bg-surface p-5 shadow-2xl"
+                  className="absolute left-0 top-full mt-1 w-[520px] rounded-[12px] border border-line bg-surface p-5 shadow-2xl"
                 >
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-                    {TOOL_GROUPS.map((g) => (
-                      <div key={g.title}>
-                        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
-                          {g.title}
-                        </p>
-                        <ul className="space-y-0.5">
-                          {g.links.map((l) => (
-                            <li key={l.label}>
-                              <a
-                                href={l.href}
-                                className="block rounded-[6px] px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
-                              >
-                                {l.label}
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                  <div className="grid grid-cols-[1.6fr_1fr] gap-x-6">
+                    {/* Convert Files — two sub-columns of category links */}
+                    <div>
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
+                        {TOOL_GROUPS[0].title}
+                      </p>
+                      <ul className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+                        {TOOL_GROUPS[0].links.map((l) => (
+                          <li key={l.label}>
+                            <a
+                              href={l.href}
+                              className="block rounded-[6px] px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
+                            >
+                              {l.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    {/* Popular conversions */}
+                    <div className="border-l border-line/60 pl-5">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
+                        {TOOL_GROUPS[1].title}
+                      </p>
+                      <ul className="space-y-0.5">
+                        {TOOL_GROUPS[1].links.map((l) => (
+                          <li key={l.label}>
+                            <a
+                              href={l.href}
+                              className="block rounded-[6px] px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
+                            >
+                              {l.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </motion.div>
               )}

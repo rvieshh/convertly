@@ -16,7 +16,11 @@ function label(ext: string) {
  * The dedicated /{src}-converter and /{src}-to-{tgt} routes carry the real
  * server-rendered <title>/meta for SEO; this is the on-page UX mirror.
  */
-export function HeroHeadline() {
+export function HeroHeadline({
+  category,
+}: {
+  category?: { title: string; description: string };
+} = {}) {
   const h = useUploadHandoff();
   const src = h?.heroSource ?? "";
   const tgt = h?.heroTarget ?? "";
@@ -25,7 +29,12 @@ export function HeroHeadline() {
   let subtitle =
     "Drop a file and pick what to turn it into. Convertly handles images, video, audio, documents, ebooks, fonts and more — right in your browser, no sign-up.";
 
-  if (src && tgt) {
+  if (category && !src) {
+    // Category page: keep the category-wide headline until the user picks a
+    // specific source format (which then narrows the title).
+    title = category.title.replace(/ —.*$/, "");
+    subtitle = category.description;
+  } else if (src && tgt) {
     title = `${label(src)} to ${label(tgt)} Converter`;
     subtitle = `Convert ${label(src)} to ${label(tgt)} online — free, fast, and secure. No sign-up, no watermark, right in your browser.`;
   } else if (src) {
