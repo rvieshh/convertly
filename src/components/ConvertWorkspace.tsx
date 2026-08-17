@@ -69,20 +69,28 @@ export function ConvertWorkspace({
   defaultTarget,
   reflectUrl = false,
   fullWidth = false,
+  lockSource,
 }: {
   defaultTarget?: string;
   reflectUrl?: boolean;
   fullWidth?: boolean;
+  lockSource?: string; // format-specific pages restrict uploads to this ext
 }) {
   const [items, setItems] = useState<Item[]>([]);
   const [dragging, setDragging] = useState(false);
+  const [notice, setNotice] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const uid = useId();
   const router = useRouter();
   const handoff = useUploadHandoff();
 
-  // When a source format is chosen in the hero, filter the file picker to it.
-  const acceptFilter = handoff?.heroSource ? `.${handoff.heroSource}` : undefined;
+  // Format-specific pages (/jpg-converter, /jpg-to-png) lock uploads to their
+  // source format; the homepage/category pages accept anything.
+  const acceptFilter = lockSource
+    ? `.${lockSource}`
+    : handoff?.heroSource
+      ? `.${handoff.heroSource}`
+      : undefined;
 
   // Build Item objects from raw files.
   const makeItems = useCallback(
@@ -120,7 +128,25 @@ export function ConvertWorkspace({
 
   const addFiles = useCallback(
     (files: FileList | File[]) => {
-      const arr = Array.from(files);
+      let arr = Array.from(files);
+
+      // Format-locked page: only accept files whose extension matches. Reject
+      // the rest with a clear message instead of silently queuing them.
+      if (lockSource) {
+        const ok = arr.filter((f) => extOf(f.name) === lockSource);
+        const rejected = arr.length - ok.length;
+        if (rejected > 0) {
+          setNotice(
+            `This is the ${lockSource.toUpperCase()} converter — ${rejected} file${
+              rejected > 1 ? "s were" : " was"
+            } skipped. Upload .${lockSource} files, or use a different converter.`,
+          );
+        } else {
+          setNotice("");
+        }
+        arr = ok;
+        if (arr.length === 0) return;
+      }
       // Homepage: if the first file maps to a supported converter route, stash
       // the files and navigate to /{ext}-converter so the dedicated page opens
       // with the files already loaded (CloudConvert behaviour).
@@ -140,9 +166,9 @@ export function ConvertWorkspace({
           return;
         }
       }
-      addToState(files);
+      addToState(arr);
     },
-    [reflectUrl, items.length, handoff, router, addToState],
+    [reflectUrl, items.length, handoff, router, addToState, lockSource],
   );
 
   const onDrop = useCallback(
@@ -219,8 +245,14 @@ export function ConvertWorkspace({
   // Empty state — drop zone
   if (items.length === 0) {
     return (
-      <div
-        onDragOver={(e) => {
+      <div className="space-y-3">
+        {notice && (
+          <div className="rounded-[8px] border border-danger/40 bg-danger/10 px-4 py-2.5 text-sm text-danger">
+            {notice}
+          </div>
+        )}
+        <div
+          onDragOver={(e) => {
           e.preventDefault();
           setDragging(true);
         }}
@@ -255,13 +287,20 @@ export function ConvertWorkspace({
           className="hidden"
           onChange={(e) => e.target.files && addFiles(e.target.files)}
         />
+        </div>
       </div>
     );
   }
 
   // Loaded state — file rows + action bar
   return (
-    <div className="overflow-hidden rounded-[12px] border border-line bg-surface elev-raised">
+    <div className="space-y-3">
+      {notice && (
+        <div className="rounded-[8px] border border-danger/40 bg-danger/10 px-4 py-2.5 text-sm text-danger">
+          {notice}
+        </div>
+      )}
+      <div className="overflow-hidden rounded-[12px] border border-line bg-surface elev-raised">
       <ul className="divide-y divide-line/70">
         <AnimatePresence initial={false}>
           {items.map((it) => (
@@ -361,6 +400,7 @@ export function ConvertWorkspace({
             Convert
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

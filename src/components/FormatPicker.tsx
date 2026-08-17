@@ -67,17 +67,29 @@ export function FormatPicker({ targets, value, onChange, placeholder, children, 
   }, [cat, grouped, targets, query]);
 
   // Position the popover under the trigger (portal to escape overflow clipping).
+  // Recompute on open AND on scroll/resize so it tracks the trigger instead of
+  // sticking in place when the page scrolls.
   useEffect(() => {
-    if (open && btnRef.current) {
+    if (!open) return;
+
+    const reposition = () => {
+      if (!btnRef.current) return;
       const r = btnRef.current.getBoundingClientRect();
       const width = 380;
-      // Prefer aligning the popover's right edge to the trigger, but clamp
-      // into the viewport so it never spills off-screen or covers nothing.
       let left = r.left - 40;
       if (left + width > window.innerWidth - 12) left = window.innerWidth - width - 12;
       if (left < 12) left = 12;
       setCoords({ top: r.bottom + 8, left });
-    }
+    };
+
+    reposition();
+    // Capture-phase so we catch scrolls on any ancestor scroll container too.
+    window.addEventListener("scroll", reposition, true);
+    window.addEventListener("resize", reposition);
+    return () => {
+      window.removeEventListener("scroll", reposition, true);
+      window.removeEventListener("resize", reposition);
+    };
   }, [open]);
 
   useEffect(() => {

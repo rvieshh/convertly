@@ -92,6 +92,7 @@ export function ConverterView({
           <ConvertWorkspace
             reflectUrl={isHome}
             defaultTarget={category ? undefined : initialTarget}
+            lockSource={!category && initialSource ? initialSource : undefined}
           />
         </div>
       </section>
