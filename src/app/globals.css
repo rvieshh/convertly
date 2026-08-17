@@ -25,7 +25,44 @@
   --r-card: 14px;
   --r-control: 8px;
   --r-small: 4px;
+
+  /* Foreground text (overridable per theme) */
+  --text: #ededf0;
 }
+
+/*
+ * Light theme overrides. Applied when the <html> element has the `light`
+ * class (driven by the admin theme setting).
+ */
+html.light {
+  --bg: #f7f7f9;
+  --surface: #ffffff;
+  --surface-2: #f0f0f3;
+  --border: #e2e2e8;
+  --muted: #6b6b76;
+  --text: #1a1a1f;
+  color-scheme: light;
+}
+html.light .elev-raised {
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 0px 0px inset,
+    rgba(0, 0, 0, 0.08) 0px 8px 24px 0px;
+}
+
+/*
+ * Light-mode text remap. Components use text-white / zinc grays tuned for the
+ * dark UI; in light mode those become invisible or low-contrast. Remap the
+ * common utilities to readable dark tones so the whole site adapts without
+ * touching every component. (Applies to text color only.)
+ */
+html.light .text-white { color: #16161a !important; }
+html.light .text-zinc-300 { color: #3f3f46 !important; }
+html.light .text-zinc-400 { color: #52525b !important; }
+html.light .text-zinc-500 { color: #71717a !important; }
+html.light .bg-\[\#151517\] { background-color: #ffffff !important; }
+html.light .bg-\[\#18181b\] { background-color: #ffffff !important; }
+html.light .bg-\[\#141417\] { background-color: #f0f0f3 !important; }
+html.light .border-white\/5 { border-color: rgba(0,0,0,0.08) !important; }
 
 @theme inline {
   --font-sans: var(--font-inter);
@@ -47,8 +84,8 @@ html {
 
 body {
   background: var(--bg);
-  color: #ededf0;
-  font-family: var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  color: var(--text);
+  font-family: var(--font-active, var(--font-inter)), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
 }
 

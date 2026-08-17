@@ -1,52 +1,33 @@
-import { Repeat } from "lucide-react";
+"use client";
 
-const COLUMNS = [
-  {
-    title: "Project",
-    links: [
-      { label: "GitHub", href: "https://github.com/rvieshh/convertly" },
-      { label: "Convert", href: "#converter" },
-      { label: "Formats", href: "#formats" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Ravisen", href: "https://ravisen.com" },
-      { label: "Report an issue", href: "https://github.com/rvieshh/convertly/issues" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "MIT License", href: "https://github.com/rvieshh/convertly/blob/main/README.md" },
-    ],
-  },
-];
+import { Repeat } from "lucide-react";
+import { useSettings } from "@/components/SettingsProvider";
 
 export function Footer() {
+  const s = useSettings();
+  const isExt = (h: string) => h.startsWith("http");
+
   return (
-    <footer className="border-t border-line/60 bg-[#151517]">
+    <footer className="border-t border-line/60 bg-surface">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-12 py-14">
         <div className="grid gap-10 sm:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2">
-              <span className="grid h-7 w-7 place-items-center rounded-[6px] bg-primary text-white">
-                <Repeat className="h-4 w-4" />
+              <span className="grid h-7 w-7 place-items-center overflow-hidden rounded-[6px] bg-primary text-white">
+                {s.logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={s.logoUrl} alt={s.siteName} className="h-full w-full object-cover" />
+                ) : (
+                  <Repeat className="h-4 w-4" />
+                )}
               </span>
-              <span className="text-[15px] font-bold text-white">
-                Convert<span className="text-primary">ly</span>
-              </span>
+              <span className="text-[15px] font-bold text-white">{s.logoText || s.siteName}</span>
             </div>
-            <p className="mt-3 max-w-xs text-sm text-muted">
-              Free, open-source file converter for images, video, audio, documents, ebooks,
-              fonts and more. Convert in your
-              browser, no sign-up.
-            </p>
+            <p className="mt-3 max-w-xs text-sm text-muted">{s.footerDescription}</p>
           </div>
 
-          {COLUMNS.map((col) => (
+          {s.footerColumns.map((col) => (
             <div key={col.title}>
               <h4 className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
                 {col.title}
@@ -56,8 +37,8 @@ export function Footer() {
                   <li key={l.label}>
                     <a
                       href={l.href}
-                      target={l.href.startsWith("http") ? "_blank" : undefined}
-                      rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      target={isExt(l.href) ? "_blank" : undefined}
+                      rel={isExt(l.href) ? "noopener noreferrer" : undefined}
                       className="text-sm text-muted transition-colors hover:text-white"
                     >
                       {l.label}
@@ -70,18 +51,22 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-line/60 pt-6 text-sm text-muted sm:flex-row">
-          <p>© {new Date().getFullYear()} Convertly · MIT Licensed</p>
           <p>
-            Backed by{" "}
-            <a
-              href="https://ravisen.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-zinc-300 transition-colors hover:text-primary"
-            >
-              Ravisen
-            </a>
+            © {new Date().getFullYear()} {s.copyrightName || s.siteName}
           </p>
+          {s.footerBackedByName && (
+            <p>
+              {s.footerBackedByLabel}{" "}
+              <a
+                href={s.footerBackedByUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-zinc-300 transition-colors hover:text-primary"
+              >
+                {s.footerBackedByName}
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </footer>

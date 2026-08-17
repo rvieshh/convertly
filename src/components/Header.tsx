@@ -21,6 +21,7 @@ import {
   Minimize2,
 } from "lucide-react";
 import { CONVERT_GROUP, OPTIMIZE_GROUP } from "@/lib/tools";
+import { useSettings } from "@/components/SettingsProvider";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   image: Image,
@@ -40,6 +41,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export function Header() {
+  const settings = useSettings();
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -59,15 +61,20 @@ export function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-[100] border-b border-white/5 bg-[#18181b]/95 backdrop-blur">
+    <header className="sticky top-0 z-[100] border-b border-line/60 bg-surface/95 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between px-6 lg:px-12">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-[6px] bg-primary text-white">
-            <Repeat className="h-4 w-4" />
+          <span className="grid h-7 w-7 place-items-center overflow-hidden rounded-[6px] bg-primary text-white">
+            {settings.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={settings.logoUrl} alt={settings.siteName} className="h-full w-full object-cover" />
+            ) : (
+              <Repeat className="h-4 w-4" />
+            )}
           </span>
           <span className="text-[15px] font-bold tracking-tight text-white">
-            Convert<span className="text-primary">ly</span>
+            {settings.logoText || settings.siteName}
           </span>
         </a>
 
@@ -158,14 +165,31 @@ export function Header() {
         </nav>
 
         {/* Right CTA */}
-        <a
-          href="https://github.com/rvieshh/convertly"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-[5px] bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
-        >
-          Star on GitHub
-        </a>
+        {settings.authEnabled ? (
+          <div className="flex items-center gap-3">
+            <a
+              href="/login"
+              className="rounded-[5px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:text-white"
+            >
+              Login
+            </a>
+            <a
+              href="/register"
+              className="rounded-[5px] bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+            >
+              Register
+            </a>
+          </div>
+        ) : (
+          <a
+            href="https://github.com/rvieshh/convertly"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-[5px] bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+          >
+            Star on GitHub
+          </a>
+        )}
       </div>
     </header>
   );
