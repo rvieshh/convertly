@@ -9,8 +9,8 @@ import type { ConverterPage } from "@/lib/converterPages";
  */
 export function FormatConverterHero({ page }: { page: ConverterPage }) {
   return (
-    <section className="mx-auto min-h-[calc(100vh-3.5rem)] max-w-[1600px] px-6 py-10 lg:px-12">
-      <div className="mb-6">
+    <section className="mx-auto max-w-3xl px-6 py-10 lg:px-12">
+      <div className="mb-6 text-center">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {page.fromLabel} Converter
         </h1>
@@ -20,7 +20,7 @@ export function FormatConverterHero({ page }: { page: ConverterPage }) {
         </p>
       </div>
 
-      <ConvertWorkspace defaultTarget={page.suggestedTarget} fullWidth />
+      <ConvertWorkspace defaultTarget={page.suggestedTarget} />
     </section>
   );
 }
