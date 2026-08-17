@@ -62,6 +62,10 @@ export function ConverterView({
   // inline instead of re-navigating.
   const isHome = !initialSource && !category;
 
+  // Once files are in the workspace, hide the hero converter cards — changing
+  // the source there would desync from the actual uploaded file.
+  const filesLoaded = h?.filesLoaded ?? false;
+
   return (
     <main className="relative overflow-hidden">
       <div
@@ -75,20 +79,22 @@ export function ConverterView({
       />
 
       <section className="mx-auto max-w-[1600px] px-6 pt-5 pb-12 lg:px-12">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
+        <div className={`grid items-center gap-8 ${filesLoaded ? "" : "lg:grid-cols-2"}`}>
           <div>
             <HeroHeadline category={category ? { title: category.title, description: category.description } : undefined} />
           </div>
-          <div className="hidden lg:flex lg:items-center lg:justify-center">
-            <HeroConverter
-              initialSource={heroSeed}
-              initialTarget={category ? undefined : initialTarget}
-              sourceCategory={category?.id}
-            />
-          </div>
+          {!filesLoaded && (
+            <div className="hidden lg:flex lg:items-center lg:justify-center">
+              <HeroConverter
+                initialSource={heroSeed}
+                initialTarget={category ? undefined : initialTarget}
+                sourceCategory={category?.id}
+              />
+            </div>
+          )}
         </div>
 
-        <div className="mx-auto mt-6 w-full max-w-3xl">
+        <div className={`mx-auto mt-6 w-full ${filesLoaded ? "max-w-5xl" : "max-w-3xl"}`}>
           <ConvertWorkspace
             reflectUrl={isHome}
             defaultTarget={category ? undefined : initialTarget}

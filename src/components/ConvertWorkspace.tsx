@@ -126,6 +126,15 @@ export function ConvertWorkspace({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Tell the shared layout whether files are loaded, so it can hide the hero
+  // converter cards (which would otherwise let you change the source and desync
+  // from the actual uploaded file).
+  useEffect(() => {
+    handoff?.setFilesLoaded(items.length > 0);
+    return () => handoff?.setFilesLoaded(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
+
   const addFiles = useCallback(
     (files: FileList | File[]) => {
       let arr = Array.from(files);
@@ -338,6 +347,20 @@ export function ConvertWorkspace({
                   <span className="inline-flex items-center gap-1.5 px-2 text-sm text-muted">
                     <Loader2 className="h-4 w-4 animate-spin text-primary" /> Converting…
                   </span>
+                ) : it.stage === "error" && it.error ? (
+                  <>
+                    <span className="max-w-[220px] truncate text-xs text-danger" title={it.error}>
+                      {it.error}
+                    </span>
+                    {it.targets.length > 0 && it.target && (
+                      <button
+                        onClick={() => convertOne(it)}
+                        className="rounded-[5px] border border-line px-3 py-1.5 text-xs font-medium text-zinc-300 transition-colors hover:text-white"
+                      >
+                        Retry
+                      </button>
+                    )}
+                  </>
                 ) : it.targets.length > 0 ? (
                   <>
                     <span className="hidden items-center gap-1.5 rounded-[6px] bg-surface-2 px-2.5 py-1.5 text-xs font-semibold uppercase text-zinc-300 sm:inline-flex">

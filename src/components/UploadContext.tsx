@@ -17,6 +17,9 @@ interface UploadHandoff {
   heroTarget: string;
   setHeroSource: (s: string) => void;
   setHeroTarget: (t: string) => void;
+  // Whether the workspace currently has files loaded (hide hero when true).
+  filesLoaded: boolean;
+  setFilesLoaded: (v: boolean) => void;
 }
 
 const Ctx = createContext<UploadHandoff | null>(null);
@@ -27,6 +30,7 @@ export function UploadProvider({ children }: { children: ReactNode }) {
   const [, setTick] = useState(0);
   const [heroSource, setHeroSource] = useState("");
   const [heroTarget, setHeroTarget] = useState("");
+  const [filesLoaded, setFilesLoaded] = useState(false);
 
   const stash = (files: File[]) => {
     pending.current = files;
@@ -41,7 +45,7 @@ export function UploadProvider({ children }: { children: ReactNode }) {
 
   return (
     <Ctx.Provider
-      value={{ stash, drain, hasPending, heroSource, heroTarget, setHeroSource, setHeroTarget }}
+      value={{ stash, drain, hasPending, heroSource, heroTarget, setHeroSource, setHeroTarget, filesLoaded, setFilesLoaded }}
     >
       {children}
     </Ctx.Provider>
