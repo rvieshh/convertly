@@ -64,7 +64,7 @@ export function ApiSection() {
               </pre>
             </div>
             <a
-              href="https://github.com/rvieshh/convertly#api"
+              href="/docs"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-block text-sm font-medium text-primary transition-colors hover:text-primary-hover"

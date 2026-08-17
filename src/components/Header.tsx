@@ -150,10 +150,10 @@ export function Header() {
             Formats
           </a>
           <a
-            href="/#api"
+            href="/docs"
             className="rounded-[5px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
           >
-            API
+            Docs
           </a>
         </nav>
 
