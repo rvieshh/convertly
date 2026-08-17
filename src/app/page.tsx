@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { ConvertWorkspace } from "@/components/ConvertWorkspace";
-import { ConvertAnimation } from "@/components/ConvertAnimation";
+import { HeroConverter } from "@/components/HeroConverter";
 import { CatalogSecurity } from "@/components/CatalogSecurity";
 import { ApiSection } from "@/components/ApiSection";
 import { Footer } from "@/components/Footer";
@@ -33,7 +33,7 @@ export default function Home() {
               </p>
             </div>
             <div className="hidden lg:flex lg:items-center lg:justify-center">
-              <ConvertAnimation />
+              <HeroConverter />
             </div>
           </div>
 
