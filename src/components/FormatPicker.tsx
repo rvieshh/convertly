@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Search } from "lucide-react";
@@ -10,6 +10,8 @@ interface Props {
   targets: string[];
   value: string; // "" = unset
   onChange: (fmt: string) => void;
+  placeholder?: string;
+  children?: ReactNode; // custom trigger; falls back to the default button
 }
 
 const CAT_ORDER = CATEGORIES.map((c) => c.id);
@@ -22,7 +24,7 @@ const CAT_LABEL: Record<string, string> = Object.fromEntries(
  * with a search field, a category sidebar, and a grid of output formats.
  * Replaces the plain <select>.
  */
-export function FormatPicker({ targets, value, onChange }: Props) {
+export function FormatPicker({ targets, value, onChange, placeholder, children }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<string>("all");
@@ -84,22 +86,28 @@ export function FormatPicker({ targets, value, onChange }: Props) {
     return () => document.removeEventListener("mousedown", onDoc);
   }, [open]);
 
-  const label = value ? FORMAT_LABELS[value] ?? value.toUpperCase() : "Select Format";
+  const label = value ? FORMAT_LABELS[value] ?? value.toUpperCase() : (placeholder ?? "Select Format");
 
   return (
     <>
-      <button
-        ref={btnRef}
-        onClick={() => setOpen((v) => !v)}
-        className={`inline-flex items-center gap-1.5 rounded-[6px] border px-3 py-1.5 text-sm font-semibold transition-colors ${
-          value
-            ? "border-line text-white hover:border-primary/50"
-            : "border-primary/60 text-primary hover:bg-primary/10"
-        }`}
-      >
-        {label}
-        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
-      </button>
+      {children ? (
+        <button ref={btnRef} onClick={() => setOpen((v) => !v)} className="cursor-pointer">
+          {children}
+        </button>
+      ) : (
+        <button
+          ref={btnRef}
+          onClick={() => setOpen((v) => !v)}
+          className={`inline-flex items-center gap-1.5 rounded-[6px] border px-3 py-1.5 text-sm font-semibold transition-colors ${
+            value
+              ? "border-line text-white hover:border-primary/50"
+              : "border-primary/60 text-primary hover:bg-primary/10"
+          }`}
+        >
+          {label}
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+      )}
 
       {typeof document !== "undefined" &&
         createPortal(

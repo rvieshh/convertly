@@ -81,6 +81,9 @@ export function ConvertWorkspace({
   const router = useRouter();
   const handoff = useUploadHandoff();
 
+  // When a source format is chosen in the hero, filter the file picker to it.
+  const acceptFilter = handoff?.heroSource ? `.${handoff.heroSource}` : undefined;
+
   // Build Item objects from raw files.
   const makeItems = useCallback(
     (files: FileList | File[]): Item[] =>
@@ -125,7 +128,15 @@ export function ConvertWorkspace({
         const ext = extOf(arr[0].name);
         if (ext && targetsFor(ext).length > 0 && handoff) {
           handoff.stash(arr);
-          router.push(`/${ext}-converter`);
+          // If a target was chosen in the hero, open the pair route so the
+          // dedicated page pre-selects it (e.g. /png-to-jpg); otherwise the
+          // plain converter route (/png-converter).
+          const tgt = handoff.heroTarget;
+          const dest =
+            tgt && targetsFor(ext).includes(tgt)
+              ? `/${ext}-to-${tgt}`
+              : `/${ext}-converter`;
+          router.push(dest);
           return;
         }
       }
@@ -240,6 +251,7 @@ export function ConvertWorkspace({
           ref={inputRef}
           type="file"
           multiple
+          accept={acceptFilter}
           className="hidden"
           onChange={(e) => e.target.files && addFiles(e.target.files)}
         />
