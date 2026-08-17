@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveEngine, MIME_BY_EXT } from "@/lib/formats";
 import { convertImage } from "@/lib/engines/image";
-import { convertMedia, convertDocument, convertMagick, convertMarkup } from "@/lib/engines/cli";
+import {
+  convertMedia,
+  convertDocument,
+  convertMagick,
+  convertMarkup,
+  convertEbook,
+  convertFont,
+  convertVector,
+  convertArchive,
+} from "@/lib/engines/cli";
 
 // Conversions run on the Node runtime (native binaries + child processes).
 export const runtime = "nodejs";
@@ -51,6 +60,18 @@ export async function POST(req: NextRequest) {
         break;
       case "markup":
         output = await convertMarkup(input, sourceExt, target);
+        break;
+      case "ebook":
+        output = await convertEbook(input, sourceExt, target);
+        break;
+      case "font":
+        output = await convertFont(input, sourceExt, target);
+        break;
+      case "vector":
+        output = await convertVector(input, sourceExt, target);
+        break;
+      case "archive":
+        output = await convertArchive(input, sourceExt, target);
         break;
       default:
         return NextResponse.json({ error: "Unsupported conversion" }, { status: 422 });

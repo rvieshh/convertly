@@ -102,3 +102,82 @@ export async function convertMarkup(
     await cleanup(dir);
   }
 }
+
+/** Calibre: ebook conversion (epub, mobi, azw3, fb2, cbz, etc.). */
+export async function convertEbook(
+  input: Buffer,
+  sourceExt: string,
+  targetExt: string,
+): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, `in.${sourceExt}`);
+    const outPath = path.join(dir, `out.${targetExt}`);
+    await fs.writeFile(inPath, input);
+    // ebook-convert infers formats from the file extensions.
+    await run("ebook-convert", [inPath, outPath], 240_000);
+    return await fs.readFile(outPath);
+  } finally {
+    await cleanup(dir);
+  }
+}
+
+/** FontForge: font conversion (ttf, otf, woff, woff2, etc.). */
+export async function convertFont(
+  input: Buffer,
+  sourceExt: string,
+  targetExt: string,
+): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, `in.${sourceExt}`);
+    const outPath = path.join(dir, `out.${targetExt}`);
+    await fs.writeFile(inPath, input);
+    // Run a tiny FontForge script: open the input, generate the target.
+    const script = `Open("${inPath}"); Generate("${outPath}");`;
+    await run("fontforge", ["-lang=ff", "-c", script], 120_000);
+    return await fs.readFile(outPath);
+  } finally {
+    await cleanup(dir);
+  }
+}
+
+/** Inkscape: vector conversion (svg, pdf, eps, png, emf, wmf). */
+export async function convertVector(
+  input: Buffer,
+  sourceExt: string,
+  targetExt: string,
+): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, `in.${sourceExt}`);
+    const outPath = path.join(dir, `out.${targetExt}`);
+    await fs.writeFile(inPath, input);
+    await run("inkscape", [inPath, "--export-type=" + targetExt, "--export-filename=" + outPath], 120_000);
+    return await fs.readFile(outPath);
+  } finally {
+    await cleanup(dir);
+  }
+}
+
+/** 7-Zip / tar: archive create + extract-to-single conversions. */
+export async function convertArchive(
+  input: Buffer,
+  sourceExt: string,
+  targetExt: string,
+): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, `in.${sourceExt}`);
+    const outPath = path.join(dir, `out.${targetExt}`);
+    await fs.writeFile(inPath, input);
+    // Recompress: extract the input into a folder, then repack as the target.
+    const extractDir = path.join(dir, "x");
+    await fs.mkdir(extractDir, { recursive: true });
+    await run("7z", ["x", inPath, `-o${extractDir}`, "-y"], 180_000);
+    await run("7z", ["a", outPath, path.join(extractDir, "*")], 180_000);
+    return await fs.readFile(outPath);
+  } finally {
+    await cleanup(dir);
+  }
+}

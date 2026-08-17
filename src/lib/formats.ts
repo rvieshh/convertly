@@ -13,7 +13,7 @@
 //   markup  -> Pandoc       (markdown / html / rst / epub / plain text)
 // ---------------------------------------------------------------------------
 
-export type EngineId = "image" | "magick" | "media" | "doc" | "markup";
+export type EngineId = "image" | "magick" | "media" | "doc" | "markup" | "ebook" | "font" | "vector" | "archive";
 
 export interface Engine {
   id: EngineId;
@@ -70,12 +70,35 @@ const markupIn = [
 ];
 const markupOut = ["html", "md", "pdf", "docx", "epub", "txt", "rst", "latex", "odt", "rtf"];
 
+// Calibre ebooks.
+const ebookExts = ["epub", "mobi", "azw3", "azw", "fb2", "lit", "pdb", "lrf", "rtf", "cbz", "cbr", "txt", "html", "pdf", "docx"];
+const ebookIn = ["epub", "mobi", "azw3", "azw", "fb2", "lit", "pdb", "lrf", "cbz", "cbr", "txt", "html", "pdf", "docx", "rtf", "odt"];
+const ebookOut = ["epub", "mobi", "azw3", "fb2", "lit", "pdb", "lrf", "txt", "pdf", "docx", "rtf"];
+
+// FontForge fonts.
+const fontExts = ["ttf", "otf", "woff", "woff2", "eot", "svg", "ps", "pfb", "bdf"];
+const fontIn = ["ttf", "otf", "woff", "woff2", "pfb", "bdf", "ps"];
+const fontOut = ["ttf", "otf", "woff", "woff2", "svg", "pfb"];
+
+// Inkscape vector graphics.
+const vectorIn = ["svg", "svgz", "pdf", "eps", "ai", "emf", "wmf", "cdr"];
+const vectorOut = ["svg", "pdf", "eps", "png", "emf", "wmf", "ps"];
+
+// 7-Zip / archive formats (recompress).
+const archiveExts = ["zip", "7z", "tar", "gz", "tgz", "bz2", "tbz2", "xz", "rar", "cbz"];
+const archiveIn = ["zip", "7z", "tar", "gz", "tgz", "bz2", "tbz2", "xz", "rar"];
+const archiveOut = ["zip", "7z", "tar", "gz", "tgz", "bz2", "xz"];
+
 export const ENGINES: Engine[] = [
   { id: "image", inputs: sharpIn, outputs: sharpOut },
   { id: "magick", inputs: magickImg, outputs: magickImg },
   { id: "media", inputs: mediaIn, outputs: mediaOut },
   { id: "doc", inputs: docIn, outputs: docOut },
   { id: "markup", inputs: markupIn, outputs: markupOut },
+  { id: "ebook", inputs: ebookIn, outputs: ebookOut },
+  { id: "font", inputs: fontIn, outputs: fontOut },
+  { id: "vector", inputs: vectorIn, outputs: vectorOut },
+  { id: "archive", inputs: archiveIn, outputs: archiveOut },
 ];
 
 // ---- MIME map (for download responses) ----------------------------------
@@ -200,6 +223,10 @@ export const CATEGORIES: Category[] = [
   },
   { id: "spreadsheet", label: "Spreadsheet", formats: docSheet.map((e) => e.toUpperCase()).sort() },
   { id: "slides", label: "Slides", formats: docSlide.map((e) => e.toUpperCase()).sort() },
+  { id: "ebook", label: "Ebook", formats: Array.from(new Set(ebookExts)).map((e) => e.toUpperCase()).sort() },
+  { id: "font", label: "Font", formats: Array.from(new Set(fontExts)).map((e) => e.toUpperCase()).sort() },
+  { id: "vector", label: "Vector", formats: Array.from(new Set([...vectorIn, ...vectorOut])).map((e) => e.toUpperCase()).sort() },
+  { id: "archive", label: "Archive", formats: Array.from(new Set(archiveExts)).map((e) => e.toUpperCase()).sort() },
 ];
 
 /** Which catalog category an extension belongs to (for the format picker). */
@@ -207,8 +234,12 @@ export function categoryOf(ext: string): string {
   const e = ext.toLowerCase().replace(/^\./, "");
   if (audioExts.includes(e)) return "audio";
   if (videoExts.includes(e)) return "video";
+  if (archiveExts.includes(e)) return "archive";
+  if (fontExts.includes(e)) return "font";
+  if (ebookExts.includes(e) && !["pdf", "txt", "html", "docx", "rtf"].includes(e)) return "ebook";
   if (docSheet.includes(e)) return "spreadsheet";
   if (docSlide.includes(e)) return "slides";
+  if (vectorIn.includes(e) && !magickImg.includes(e)) return "vector";
   if ([...docText, "pdf", ...markupIn].includes(e)) return "document";
   return "image";
 }
