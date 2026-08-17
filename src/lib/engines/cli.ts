@@ -181,3 +181,89 @@ export async function convertArchive(
     await cleanup(dir);
   }
 }
+
+/** Ghostscript: compress a PDF (downsampling + recompression). */
+export async function compressPdf(input: Buffer): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, "in.pdf");
+    const outPath = path.join(dir, "out.pdf");
+    await fs.writeFile(inPath, input);
+    await run(
+      "gs",
+      [
+        "-sDEVICE=pdfwrite",
+        "-dCompatibilityLevel=1.4",
+        "-dPDFSETTINGS=/ebook",
+        "-dNOPAUSE",
+        "-dQUIET",
+        "-dBATCH",
+        `-sOutputFile=${outPath}`,
+        inPath,
+      ],
+      180_000,
+    );
+    const out = await fs.readFile(outPath);
+    // If Ghostscript somehow produced a larger file, keep the original.
+    return out.length > 0 && out.length < input.length ? out : input;
+  } finally {
+    await cleanup(dir);
+  }
+}
+
+/** pngquant: lossy PNG compression with alpha preserved. */
+export async function compressPng(input: Buffer): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, "in.png");
+    const outPath = path.join(dir, "out.png");
+    await fs.writeFile(inPath, input);
+    // --force overwrite, quality floor/ceiling, keep going on marginal images.
+    await run(
+      "pngquant",
+      ["--force", "--quality=45-85", "--strip", "--output", outPath, inPath],
+      120_000,
+    ).catch(() => {});
+    try {
+      const out = await fs.readFile(outPath);
+      return out.length > 0 && out.length < input.length ? out : input;
+    } catch {
+      return input;
+    }
+  } finally {
+    await cleanup(dir);
+  }
+}
+
+/** jpegoptim: JPEG compression (in place, max quality 80). */
+export async function compressJpg(input: Buffer): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, "in.jpg");
+    await fs.writeFile(inPath, input);
+    await run("jpegoptim", ["--strip-all", "--max=80", inPath], 120_000).catch(() => {});
+    const out = await fs.readFile(inPath);
+    return out.length > 0 && out.length <= input.length ? out : input;
+  } finally {
+    await cleanup(dir);
+  }
+}
+
+/** ocrmypdf: add a searchable text layer to a PDF (or image -> PDF). */
+export async function ocrPdf(input: Buffer, sourceExt: string): Promise<Buffer> {
+  const dir = await makeWorkDir();
+  try {
+    const inPath = path.join(dir, `in.${sourceExt}`);
+    const outPath = path.join(dir, "out.pdf");
+    await fs.writeFile(inPath, input);
+    // --force-ocr redoes OCR even if some text exists; -l eng+ind for EN+ID.
+    await run(
+      "ocrmypdf",
+      ["--force-ocr", "-l", "eng+ind", inPath, outPath],
+      240_000,
+    );
+    return await fs.readFile(outPath);
+  } finally {
+    await cleanup(dir);
+  }
+}

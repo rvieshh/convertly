@@ -2,8 +2,42 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Repeat, ChevronDown } from "lucide-react";
-import { TOOL_GROUPS } from "@/lib/tools";
+import {
+  Repeat,
+  ChevronDown,
+  Image,
+  Film,
+  Music,
+  FileText,
+  FileSpreadsheet,
+  Presentation,
+  BookOpen,
+  Type,
+  PenTool,
+  Archive,
+  Camera,
+  FileType,
+  ScanText,
+  Minimize2,
+} from "lucide-react";
+import { CONVERT_GROUP, OPTIMIZE_GROUP } from "@/lib/tools";
+
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  image: Image,
+  video: Film,
+  audio: Music,
+  document: FileText,
+  spreadsheet: FileSpreadsheet,
+  slides: Presentation,
+  ebook: BookOpen,
+  font: Type,
+  vector: PenTool,
+  archive: Archive,
+  raw: Camera,
+  pdf: FileType,
+  ocr: ScanText,
+  compress: Minimize2,
+};
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -17,9 +51,12 @@ export function Header() {
     closeTimer.current = setTimeout(() => setOpen(false), 120);
   };
 
-  useEffect(() => () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    },
+    [],
+  );
 
   return (
     <header className="sticky top-0 z-[100] border-b border-white/5 bg-[#18181b]/95 backdrop-blur">
@@ -52,43 +89,52 @@ export function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 6 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute left-0 top-full mt-1 w-[520px] rounded-[12px] border border-line bg-surface p-5 shadow-2xl"
+                  className="absolute left-0 top-full mt-1 w-[560px] rounded-[12px] border border-line bg-surface p-5 shadow-2xl"
                 >
-                  <div className="grid grid-cols-[1.6fr_1fr] gap-x-6">
-                    {/* Convert Files — two sub-columns of category links */}
+                  <div className="grid grid-cols-[1.7fr_1fr] gap-x-6">
+                    {/* Convert Files — icon grid, two sub-columns */}
                     <div>
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
-                        {TOOL_GROUPS[0].title}
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted">
+                        {CONVERT_GROUP.title}
                       </p>
-                      <ul className="grid grid-cols-2 gap-x-4 gap-y-0.5">
-                        {TOOL_GROUPS[0].links.map((l) => (
-                          <li key={l.label}>
-                            <a
-                              href={l.href}
-                              className="block rounded-[6px] px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
-                            >
-                              {l.label}
-                            </a>
-                          </li>
-                        ))}
+                      <ul className="grid grid-cols-2 gap-x-3 gap-y-0.5">
+                        {CONVERT_GROUP.links.map((l) => {
+                          const Icon = ICONS[l.icon] ?? FileText;
+                          return (
+                            <li key={l.label}>
+                              <a
+                                href={l.href}
+                                className="flex items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
+                              >
+                                <Icon className="h-4 w-4 shrink-0 text-primary/80" />
+                                {l.label.replace(" Converter", "")}
+                              </a>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
-                    {/* Popular conversions */}
+
+                    {/* Optimize Files — icon list */}
                     <div className="border-l border-line/60 pl-5">
-                      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted">
-                        {TOOL_GROUPS[1].title}
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted">
+                        {OPTIMIZE_GROUP.title}
                       </p>
                       <ul className="space-y-0.5">
-                        {TOOL_GROUPS[1].links.map((l) => (
-                          <li key={l.label}>
-                            <a
-                              href={l.href}
-                              className="block rounded-[6px] px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
-                            >
-                              {l.label}
-                            </a>
-                          </li>
-                        ))}
+                        {OPTIMIZE_GROUP.links.map((l) => {
+                          const Icon = ICONS[l.icon] ?? Minimize2;
+                          return (
+                            <li key={l.label}>
+                              <a
+                                href={l.href}
+                                className="flex items-center gap-2.5 rounded-[6px] px-2 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
+                              >
+                                <Icon className="h-4 w-4 shrink-0 text-primary/80" />
+                                {l.label}
+                              </a>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>
@@ -98,13 +144,13 @@ export function Header() {
           </div>
 
           <a
-            href="#formats"
+            href="/#formats"
             className="rounded-[5px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
           >
             Formats
           </a>
           <a
-            href="#api"
+            href="/#api"
             className="rounded-[5px] px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5 hover:text-white"
           >
             API

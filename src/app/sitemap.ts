@@ -14,6 +14,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   for (const slug of allCategorySlugs()) {
     routes.push({ url: `${BASE}/${slug}`, lastModified: now, changeFrequency: "weekly", priority: 0.9 });
   }
+  // Optimize tools.
+  for (const slug of ["compress-pdf", "compress-png", "compress-jpg", "pdf-ocr"]) {
+    routes.push({ url: `${BASE}/${slug}`, lastModified: now, changeFrequency: "weekly", priority: 0.85 });
+  }
   for (const slug of allConverterSlugs()) {
     routes.push({
       url: `${BASE}/${slug}`,
