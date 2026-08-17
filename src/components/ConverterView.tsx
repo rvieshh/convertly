@@ -57,6 +57,11 @@ export function ConverterView({
   // On a category page the hero previews the first format of that category.
   const heroSeed = category ? category.formats[0] : initialSource;
 
+  // The true homepage (no format/category in the URL) reflects the chosen
+  // format into the URL on upload; format/category pages load the workspace
+  // inline instead of re-navigating.
+  const isHome = !initialSource && !category;
+
   return (
     <main className="relative overflow-hidden">
       <div
@@ -84,7 +89,10 @@ export function ConverterView({
         </div>
 
         <div className="mx-auto mt-6 w-full max-w-3xl">
-          <ConvertWorkspace reflectUrl defaultTarget={category ? undefined : initialTarget} />
+          <ConvertWorkspace
+            reflectUrl={isHome}
+            defaultTarget={category ? undefined : initialTarget}
+          />
         </div>
       </section>
 
