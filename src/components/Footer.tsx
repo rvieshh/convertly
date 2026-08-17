@@ -40,7 +40,8 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-3 max-w-xs text-sm text-muted">
-              Free, open-source file converter for images, audio, and video. Convert in your
+              Free, open-source file converter for images, video, audio, documents, ebooks,
+              fonts and more. Convert in your
               browser, no sign-up.
             </p>
           </div>

@@ -47,7 +47,7 @@ export function CatalogSecurity() {
             </div>
             <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
               Convertly handles {TOTAL_FORMATS} formats across {CATEGORIES.length} categories —
-              images, video and audio — with more engines (documents, archives) on the roadmap.
+              images, video, audio, documents, ebooks, fonts, vectors and archives.
             </p>
 
             {/* Category row */}
