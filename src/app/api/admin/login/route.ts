@@ -53,9 +53,13 @@ export async function POST(req: NextRequest) {
   logActivity("auth", "Admin logged in");
 
   const res = NextResponse.json({ ok: true, mustChange: admin.must_change === 1 });
+  // Only mark the cookie Secure when the request actually arrived over HTTPS.
+  // Accessing the app over plain http:// (e.g. by IP) with Secure set would make
+  // the browser silently drop the cookie, leaving the user stuck on login.
+  const proto = req.headers.get("x-forwarded-proto") || (req.nextUrl.protocol === "https:" ? "https" : "http");
   res.cookies.set(AUTH_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: proto === "https",
     sameSite: "lax",
     path: "/",
     maxAge: 12 * 60 * 60,
