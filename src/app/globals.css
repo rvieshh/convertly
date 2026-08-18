@@ -82,6 +82,13 @@ html {
   color-scheme: dark;
 }
 
+/* Never allow horizontal overflow to push the page off-screen on mobile. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   background: var(--bg);
   color: var(--text);

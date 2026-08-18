@@ -24,7 +24,7 @@ export function ApiSection() {
       <div className="mx-auto max-w-[1600px] px-6 py-16 lg:px-12">
         <div className="grid gap-12 lg:grid-cols-2">
           {/* API & Integrations */}
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2.5">
               <span className="grid h-8 w-8 place-items-center rounded-[6px] bg-primary/15 text-primary">
                 <Terminal className="h-4 w-4" />
@@ -74,7 +74,7 @@ export function ApiSection() {
           </div>
 
           {/* High-Quality Conversions */}
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2.5">
               <span className="grid h-8 w-8 place-items-center rounded-[6px] bg-primary/15 text-primary">
                 <Cpu className="h-4 w-4" />

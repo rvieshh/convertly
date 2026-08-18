@@ -29,7 +29,7 @@ export function FormatPicker({ targets, value, onChange, placeholder, children, 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<string>(defaultCategory ?? "all");
-  const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
+  const [coords, setCoords] = useState<{ top: number; left: number; width: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
 
@@ -75,11 +75,12 @@ export function FormatPicker({ targets, value, onChange, placeholder, children, 
     const reposition = () => {
       if (!btnRef.current) return;
       const r = btnRef.current.getBoundingClientRect();
-      const width = 380;
+      // Fit the viewport with a 12px gutter on each side (mobile-safe).
+      const width = Math.min(380, window.innerWidth - 24);
       let left = r.left - 40;
       if (left + width > window.innerWidth - 12) left = window.innerWidth - width - 12;
       if (left < 12) left = 12;
-      setCoords({ top: r.bottom + 8, left });
+      setCoords({ top: r.bottom + 8, left, width });
     };
 
     reposition();
@@ -141,8 +142,8 @@ export function FormatPicker({ targets, value, onChange, placeholder, children, 
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 6 }}
                 transition={{ duration: 0.14 }}
-                style={{ position: "fixed", top: coords.top, left: coords.left, zIndex: 200 }}
-                className="w-[380px] overflow-hidden rounded-[10px] border border-line bg-surface shadow-2xl"
+                style={{ position: "fixed", top: coords.top, left: coords.left, width: coords.width, zIndex: 200 }}
+                className="overflow-hidden rounded-[10px] border border-line bg-surface shadow-2xl"
               >
                 {/* search */}
                 <div className="flex items-center gap-2 border-b border-line/70 px-3 py-2.5">
