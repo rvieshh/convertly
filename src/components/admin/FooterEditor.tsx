@@ -39,25 +39,27 @@ export function FooterEditor({
             </div>
             <div className="space-y-2">
               {col.links.map((l, li) => (
-                <div key={li} className="flex items-center gap-2">
+                <div key={li} className="flex flex-col gap-2 sm:flex-row sm:items-center">
                   <input
                     value={l.label}
                     onChange={(e) => update((c) => (c[ci].links[li].label = e.target.value))}
                     placeholder="Label"
-                    className="w-1/3 rounded-[6px] border border-line bg-surface px-2.5 py-1.5 text-sm text-white outline-none focus:border-primary"
+                    className="w-full rounded-[6px] border border-line bg-surface px-2.5 py-1.5 text-sm text-white outline-none focus:border-primary sm:w-1/3"
                   />
-                  <input
-                    value={l.href}
-                    onChange={(e) => update((c) => (c[ci].links[li].href = e.target.value))}
-                    placeholder="https://… or /path"
-                    className="flex-1 rounded-[6px] border border-line bg-surface px-2.5 py-1.5 text-sm text-white outline-none focus:border-primary"
-                  />
-                  <button
-                    onClick={() => update((c) => c[ci].links.splice(li, 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[6px] text-muted hover:text-danger"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <input
+                      value={l.href}
+                      onChange={(e) => update((c) => (c[ci].links[li].href = e.target.value))}
+                      placeholder="https://… or /path"
+                      className="min-w-0 flex-1 rounded-[6px] border border-line bg-surface px-2.5 py-1.5 text-sm text-white outline-none focus:border-primary"
+                    />
+                    <button
+                      onClick={() => update((c) => c[ci].links[li] && c[ci].links.splice(li, 1))}
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-[6px] text-muted hover:text-danger"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               ))}
               <button

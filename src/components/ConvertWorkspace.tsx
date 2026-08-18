@@ -318,7 +318,7 @@ export function ConvertWorkspace({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex flex-wrap items-center gap-3 px-5 py-4 sm:flex-nowrap"
+              className="flex flex-wrap items-center gap-3 px-4 py-4 sm:flex-nowrap sm:px-5"
             >
               {/* file glyph */}
               <div className="grid h-10 w-10 shrink-0 place-items-center rounded-[5px] bg-surface-2 text-zinc-400">
@@ -328,13 +328,13 @@ export function ConvertWorkspace({
               {/* name + meta */}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-white">{it.file.name}</p>
-                <p className="text-xs text-muted">
+                <p className="truncate whitespace-nowrap text-xs text-muted">
                   {humanSize(it.file.size)} · {it.sourceExt.toUpperCase()} {kindLabel(it.sourceExt)}
                 </p>
               </div>
 
               {/* controls */}
-              <div className="flex items-center gap-2">
+              <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
                 {it.stage === "done" && it.resultUrl ? (
                   <a
                     href={it.resultUrl}

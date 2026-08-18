@@ -40,7 +40,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
   };
 
   return (
-    <div className="max-w-3xl space-y-8 pb-24">
+    <div className="max-w-3xl space-y-8 pb-28">
       {/* Branding */}
       <Section title="Branding">
         <Text label="Site name" value={s.siteName} onChange={(v) => set("siteName", v)} />
