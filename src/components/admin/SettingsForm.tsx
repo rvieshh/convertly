@@ -50,7 +50,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
 
       {/* Theme */}
       <Section title="Theme">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <Label>Mode</Label>
             <div className="flex gap-2">
@@ -80,7 +80,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
             </select>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Color label="Accent color" value={s.accent} onChange={(v) => set("accent", v)} />
           <Color label="Accent hover" value={s.accentHover} onChange={(v) => set("accentHover", v)} />
         </div>
@@ -94,7 +94,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
           value={s.authEnabled}
           onChange={(v) => set("authEnabled", v)}
         />
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Num label="Guest max uploads (0 = ∞)" value={s.guestMaxUploads} onChange={(v) => set("guestMaxUploads", v)} />
           <Num label="User max uploads (0 = ∞)" value={s.userMaxUploads} onChange={(v) => set("userMaxUploads", v)} />
           <Num label="Max file size (MB)" value={s.maxFileSizeMb} onChange={(v) => set("maxFileSizeMb", v)} />
@@ -105,7 +105,7 @@ export function SettingsForm({ initial }: { initial: SiteSettings }) {
       <Section title="Footer">
         <Text label="Footer description" value={s.footerDescription} onChange={(v) => set("footerDescription", v)} textarea />
         <Text label="Copyright name (defaults to site name)" value={s.copyrightName} onChange={(v) => set("copyrightName", v)} />
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Text label="“Backed by” label" value={s.footerBackedByLabel} onChange={(v) => set("footerBackedByLabel", v)} />
           <Text label="Backed-by name" value={s.footerBackedByName} onChange={(v) => set("footerBackedByName", v)} />
           <Text label="Backed-by URL" value={s.footerBackedByUrl} onChange={(v) => set("footerBackedByUrl", v)} />
